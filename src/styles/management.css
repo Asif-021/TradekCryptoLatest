@@ -48,3 +48,11 @@ h2{
     background-color: hsl(0, 48%, 35%);
 }
 
+#approve-btn:hover{
+    background-color: hsl(129, 48%, 45%);
+
+}
+
+#reject-btn:hover{
+    background-color: hsl(0, 48%, 45%);
+}

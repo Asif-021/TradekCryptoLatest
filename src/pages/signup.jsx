@@ -48,8 +48,11 @@ const SignUp = () => {
   const [username, setUsername] = useState('');
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [dob, setDob] = useState('');
   const [createUserWithEmailAndPassword, createUserLoading, createUserError] =
     useCreateUserWithEmailAndPassword(auth);
+
 
     const handleSignUp = async (e) => {
       e.preventDefault(); // Prevent default form submission behavior
@@ -142,6 +145,23 @@ const SignUp = () => {
             className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
             required 
           />
+          <input
+            type="text"
+            placeholder="Phone Number"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
+            required
+          />
+          <input
+            type="date"
+            placeholder="Date of Birth"
+            value={dob}
+            onChange={(e) => setDob(e.target.value)}
+            className="w-full p-3 mb-4 bg-gray-700 rounded outline-none text-white placeholder-gray-500"
+            required
+          />
+
           <button type="submit" className="w-full p-3 bg-indigo-600 rounded text-white hover:bg-indigo-500">
             Sign Up
           </button>

@@ -18,7 +18,10 @@ function Management(props){
     useEffect(() => {
         async function fetchUserInfo() {
             try{
-                const q = query(collection(firestore, "User Info"), where('idURL', '!=', ""));
+                const q = query(collection(firestore, "User Info"), where('idURL', '!=', ""),
+                                                                    where('approved', '==', false),
+                                                                    where('rejected', '==', false));
+
                 const result = await getDocs(q);
                 const userInfo = result.docs.map(doc => ({docID: doc.id, ...doc.data()}));
                 setWaitingUsers(userInfo);
@@ -56,8 +59,7 @@ function Management(props){
     }
 
     const currentUser = waitingUsers[currentIndex];
-    console.log('hihihihihih')
-    console.log(currentUser)
+    
     useEffect(() => {
             // Set the DOB and Age
             if (currentUser && currentUser.dob){
@@ -65,6 +67,7 @@ function Management(props){
                 const dob = `${date.getDate()}/${(date.getMonth()+1)}/${date.getFullYear()}`;
                 setCurrentDOB(dob);
             }
+        
     }), [currentUser];
     return(
         
