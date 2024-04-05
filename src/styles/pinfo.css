@@ -1,0 +1,36 @@
+.name, .email, .phoneNumber, .username, .password, .upload-submission{
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+    margin-bottom: 1rem;
+}
+
+button{
+    padding: 0.4rem 0.4rem;
+    font-family: 'Radio Canada', sans-serif;
+    background-color: hsl(228, 25%, 17%);
+    border-style: none;
+    box-shadow: none;
+    outline: none;
+    border: solid #fff  0.1rem;
+    border-radius: 1rem;
+    transition: all .25s ease
+}
+
+button:hover{
+    cursor: pointer;
+    background-color: hsl(228, 25%, 27%);
+}
+
+.error{
+    margin-bottom: 3%;
+    font-size: 0.8rem;
+    color: red;
+}
+
+.success{
+    margin-bottom: 3%;
+    font-size: 0.8rem;
+    color: green;
+}
+

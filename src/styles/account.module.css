@@ -1,0 +1,58 @@
+.main{
+    background-color: #161925;
+    font-family: 'Radio Canada', sans-serif;
+    height: 93vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center; /* Center items horizontally */
+    align-items: center; /* Center items vertically */
+    position: relative; /* Add position relative to the parent */
+}
+
+.options-settings-container{
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    top: 20%; 
+    left: 20%; 
+    background-color: hsl(228, 25%, 17%);
+    border: solid #fff 0.2rem;
+    border-radius: 1rem;
+    padding: 3rem;
+    min-width: 60%;
+    max-width: 65%;
+    min-height: 40%;
+    max-height: 60%;
+}
+
+
+.account-options{
+    flex-shrink: 0;
+    
+}
+
+.account-options ul{
+    margin-right: 2rem;
+    list-style: none;
+}
+.account-options ul li{
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.account-options ul li:hover{
+    color: hsl(63, 94%, 49%);
+}
+
+.settings{
+    border-left: solid #fff 0.1rem;
+    padding-left: 2rem;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: auto;
+    
+    
+}
+

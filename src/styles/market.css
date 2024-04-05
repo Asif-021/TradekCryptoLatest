@@ -1,0 +1,49 @@
+body {
+    background-color: #1c1e22; /* Set the body background to the same color */
+    margin: 0; /* Remove default margin to prevent white spaces around the edges */
+    font-family: Arial, sans-serif; /* Optional: Set a default font for the page */
+  }
+  
+  .market-container {
+    color: white;
+    background-color: #1c1e22;
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .market-list-container {
+    width: 50%;
+  }
+  
+  .chart-container {
+    width: 50%;
+  }
+  
+  .crypto-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .cryptoItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #2a2d34;
+    border-radius: 5px;
+  }
+  
+  .cryptoName {
+    font-weight: bold;
+  }
+  
+  .cryptoPrice {
+    font-weight: lighter;
+  }
+  
+  /* Add any additional global styles you might need */
+  

@@ -1,0 +1,72 @@
+.Homepage {
+    margin: 0em;
+    padding: 2em;
+    height: 100vh;
+    color: white;
+    background: #161925;
+    background-image: url('../components/cryptoBackg.png');
+    background-repeat: no-repeat;
+    background-position: right;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  /* tradek title & desc. */
+  
+  .Description{
+    width: 60%;
+  }
+
+  .horizontalLine {
+    color: white;
+    background-color: white;
+    height: 1px;
+    border: none;
+  }
+  
+  .TradekTitle {
+    color: #ffffff;
+    font-size: 75px;
+    font-weight: bold;
+  }
+
+  .TradekSlogan{
+    color: #CBF7ED;
+    font-size: 1.5em;
+  }
+
+  /* market & forum */
+
+  .MarketForumContainer{
+    display: flex;
+    gap: 8em;
+    justify-content: space-evenly;
+    background: rgba(255,255,255,0.8);
+    border-radius: 10px;
+    color: #23395B;
+    padding: 5em;
+    padding-left: 8em;
+    padding-right: 8em;
+    
+  }
+
+  .MoreMarket, .MoreForum{
+    border: 1px solid #23395B;
+    border-radius: 20px;
+    padding: 0.5em;
+    width: fit-content;
+    margin-left: auto;
+    margin-top: 2em;
+  }
+
+  .MoreMarket:hover,
+  .MoreForum:hover {
+    background-color: #1a2d43;
+    color: white;
+  }
+
+  .MarketTitle , .ForumTitle {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+
+ 

@@ -1,0 +1,50 @@
+.management-container{
+    max-height: 100%;
+}
+
+img{
+    width: 60%;
+    max-width: 500px;
+}
+h1{
+    text-align: center;
+    margin-bottom: 2%;
+}
+
+.user-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.info{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h2{
+    margin-bottom: 1%;
+}
+
+#IDimage{
+    margin: 2% 0;
+}
+
+.interact-btns-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#approve-btn{
+    margin-left: 2%;
+    background-color: hsl(129, 48%, 35%);
+}
+
+#reject-btn{
+    margin-right: 2%;
+    background-color: hsl(0, 48%, 35%);
+}
+

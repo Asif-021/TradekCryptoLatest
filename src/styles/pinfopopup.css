@@ -1,0 +1,97 @@
+body.active-pop {
+    overflow-y: hidden;
+}
+
+.pop, .overlay {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+}
+
+.overlay {
+    background: rgba(0, 0, 0, 0.8);
+}
+.pop-container {
+    border: solid white;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1.5;
+    background: hsl(228, 25%, 22%);
+    padding: 3.5% 5%;
+    border-radius: 1.5rem;
+    max-width: 70%;
+    min-width: 70%;
+    min-height: 80%;
+}
+
+
+
+.close-btn {
+    position: absolute;
+    top: 2%; 
+    right: 2%;
+    padding: 0.1rem;
+    background-color: transparent;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+.form{
+    min-height: 100%;
+}
+.new-input{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.input-container{
+    display: flex;
+    margin-bottom: 8%;
+    /* width: 80%; */
+}
+
+.submitbtn-container{
+    
+    display: flex;
+    justify-content: center;
+    
+}
+.form h1{
+    text-align: center;
+    margin-bottom: 5%;
+
+}
+
+.form label{
+    margin-right: 4%;
+    
+    /* white-space: nowrap; */
+}
+
+.input-container input{
+    margin-right: 2%;
+    max-width: 30%;
+    
+}
+
+.-error{
+    margin-bottom: 0%;
+    
+}
+
+.error{
+    margin-bottom: 3%;
+    font-size: 0.8rem;
+    color: red;
+}
+
+
+
