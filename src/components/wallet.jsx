@@ -10,6 +10,8 @@ export default function Wallet(props) {
     
 
     return(
+        <>
+        {props.data.approved &&
         <div className="balance">
             <p>Balance: ${Math.floor(props.data.balance * 100) / 100}</p>
             <div className="wallet-actions">
@@ -22,12 +24,11 @@ export default function Wallet(props) {
                 <div className="transfer-container">
                     <Popup option="transfer" data={props.data} setData={props.setData}/>
                 </div>
-                {/* <div className="convert-container">
-                    <Popup option="convert" data={props.data} setData={props.setData}/>
-                </div> */}
             </div>
         </div>
-        
+        }
+        {!props.data.approved && <div>Your account must be approved before you can access wallet.</div>}
+        </>
 
     )
 

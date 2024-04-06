@@ -1,4 +1,4 @@
-import styles from "../styles/homePage.module.css"; 
+import styles from "../styles/homepage.module.css"; 
 import Link from "next/link";
 import "./forum";
 import Header from "../components/header.jsx";

@@ -22,7 +22,8 @@ async function addDataToFireStore(name, surname, username, email, password) {
       balance: 0,
       dateJoined: dateJoined,
       idURL: "",
-      rejected: false
+      rejected: false,
+      blocked: false
     });
 
     // Add user data to 'cryptoHoldings' collection

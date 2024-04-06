@@ -76,8 +76,10 @@ function Management(props){
             <div className="user-info">
                 <h2>User Info</h2>
                 <div className="info">
+                    {currentUser && <p id="email">Email: {currentUser.email}</p>}
                     {currentUser && <p id="name">Name: {currentUser.firstName} {currentUser.lastName}</p>}
                     {currentUser && <p id="dob">DOB (DD/MM/YYY): {currentDOB}</p>}
+                    {currentUser && <p id="username">Username: {currentUser.username}</p>}
                 </div>
                 <img src={currentUser && currentUser.idURL} alt="Image of the users identification"  id="IDimage"/>
                 <div className="interact-btns-container">

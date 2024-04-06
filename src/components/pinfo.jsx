@@ -40,9 +40,12 @@ export default function Pinfo(props){
             
             {props.data.idURL == "" ?   <UploadFile data={props.data} uploaded={uploaded} setUploaded={setUploaded}/>
                                         : ""}
-            {props.data.rejected && <div className="rejected"> Your submission was rejected, please submit it again </div>}
+            {props.data.rejected && <>
+                                        <UploadFile data={props.data} uploaded={uploaded} setUploaded={setUploaded}/>
+                                        <div className="rejected"> Your submission was rejected, please submit it again </div>
+                                    </>}
             {((props.data.idURL !=="") && props.data.approved) && <div className="approved"> Your account is already approved &#x2713;</div>}
-            {((props.data.idURL!=="") && !props.data.approved) && <div className="awaiting">Your account is awaiting approval</div>}
+            {((props.data.idURL!=="") && !props.data.approved && !props.data.rejected) && <div className="awaiting">Your account is awaiting approval</div>}
                 
 
             

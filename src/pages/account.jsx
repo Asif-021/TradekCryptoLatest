@@ -5,19 +5,25 @@ import Header from "../components/header.jsx";
 import Pinfo from "../components/pinfo";
 import Wallet from "../components/wallet";
 import Management from "../components/management.jsx";
+import SearchAccount from "@/components/searchAccount";
+import TransHistory from "@/components/transactionHistory";
 import { useState, useEffect } from "react";
 import {firestore} from "../app/db.js";
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
 
-const email = "admin@email";
+
+// const email = "admin@email";
+const email = "user@email";
 // const email = "idtest@gmail";
 // const email = localStorage.getItem("email");
+// const email = "reject@gmail.com";
+// const email = "user@gmail.com";
 
 export default function Account() {
 
     const [activeSetting, setActiveSetting] = useState("pinfo");
-    const [data, setData] = useState('null');
+    const [data, setData] = useState("");
     
 
     useEffect(() => {
@@ -50,11 +56,14 @@ export default function Account() {
             case "wallet":
                 return <Wallet data={data} setData={setData}/>;
             case "transHistory":
-                    return  `Transaction History`;
+                    return  <TransHistory data={data} setData={setData}/>;
             case "portfolio":
                 return  `Portfolio`;
             case "management":
                 return <Management data={data} setData={setData}/>;
+            case "searchAccount":
+                return <SearchAccount data={data} setData={setData} />;
+            
             default:
                 return null
 
@@ -78,6 +87,7 @@ export default function Account() {
                                             <li onClick={() => setActiveSetting("portfolio")}>Portfolio</li>
                                         </>}
                         {data.admin && <li onClick={() => setActiveSetting("management")}>Management</li>}
+                        {data.admin && <li onClick={() => setActiveSetting("searchAccount")}>Search Account</li>}
                     </ul>
                 </div>
                 <div className={aStyles.settings}>
