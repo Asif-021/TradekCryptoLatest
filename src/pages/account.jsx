@@ -14,9 +14,9 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 
 
 // const email = "admin@email";
-const email = "user@email";
+// const email = "user@email";
 // const email = "idtest@gmail";
-// const email = localStorage.getItem("email");
+const email = localStorage.getItem("email");
 // const email = "reject@gmail.com";
 // const email = "user@gmail.com";
 
