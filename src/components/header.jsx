@@ -6,6 +6,7 @@ import Link from "next/link";
 
 
 
+
 const Header = () => {
     const [isLoggedIn, setIsLoggedIn] = useState("")
 
@@ -33,7 +34,14 @@ const Header = () => {
                     <p id="tradek">Tradek</p>
                 </Link>
                 {isLoggedIn ? (
-                    <button id="logout-btn" onClick={handleLogout}>Logout</button>
+                    <>
+                    <div className="button-img">
+                        <button id="logout-btn" onClick={handleLogout}>Logout</button>
+                        <Link href="./account" id="profile-img-container">
+                            <img src="/profile.png" alt="profile picture" />
+                        </Link>
+                    </div>
+                    </>
                 ) : (
                     <Link href="./signin">
                         <button id="sign-btn">Sign in</button>

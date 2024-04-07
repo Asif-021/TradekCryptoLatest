@@ -13,7 +13,14 @@ header{
     min-width: 100%;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     /* margin: 1rem 1rem; */
+}
+
+.button-img{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .header-container p{
@@ -22,7 +29,22 @@ header{
     cursor: pointer;
 }
 
-.header-container #sign-btn{
+.button-img img {
+    height: 40px;
+    width: auto;
+    
+    border: solid white 1px;
+    border-radius: 0.5rem;
+    padding-bottom: 5%;
+    cursor: pointer;
+}
+
+#profile-img-container{
+    display: flex;
+    justify-content: center;
+    margin-left: 10%;
+}
+.header-container #sign-btn {
     padding: 0 1rem;
     height: 100%;
     font-family: 'Radio Canada', sans-serif;
@@ -33,20 +55,19 @@ header{
     border: solid #fff  0.1rem;
     border-radius: 1rem;
     cursor: pointer;
-    transition: all .25s ease
+    transition: all .25s ease;
 }
 
-.header-container #logout-btn{
-    padding: 0 1rem;
+.button-img #logout-btn{
+    padding: 0.5rem;
     font-family: 'Radio Canada', sans-serif;
-    background-color: #161925;
+    background-color: hsl(228, 25%, 17%);
     border-style: none;
     box-shadow: none;
     outline: none;
-    border: solid #fff  0.1rem;
+    border: solid #fff 0.1rem;
     border-radius: 1rem;
-    cursor: pointer;
-    transition: all .25s ease
+    transition: all .25s ease;
 }
 
 .header-container button:hover{

@@ -13,7 +13,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 
 
 
-const email = "admin@email";
+// const email = "admin@email";
 // const email = "user@email";
 // const email = "idtest@gmail";
 // const email = localStorage.getItem("email");
@@ -30,7 +30,7 @@ export default function Account() {
         // Fetch data asynchronously
         async function getData() {
             try {
-                // const email = localStorage.getItem("email");
+                const email = localStorage.getItem("email");
                 if (email){
                     const q = query(collection(firestore, "User Info"), where('email', '==', email));
                     const result = await getDocs(q);
