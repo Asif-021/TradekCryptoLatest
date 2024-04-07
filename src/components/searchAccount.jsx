@@ -63,8 +63,8 @@ function searchAccount(){
                 <div className="search-form">
                     <input type="text" value={searchTerm} onChange={handleSearchChange} placeholder="Username" />
                     <button id="search-btn"onClick={handleSearch} >Search</button>
-                    {errors.empty && <div className="error">No User found with that username</div>}
                 </div>
+                {errors.empty && <div className="error">No User found with that username</div>}
                 <div className="searchResult">
 
                 {user && <> 

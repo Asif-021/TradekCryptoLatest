@@ -7,11 +7,23 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 
 export default function Wallet(props) {
 
-    
+    const [currentHoldings, setCurrentHoldings] = useState();
+
+    useEffect( () => {
+        const fetchData = async () => {
+            const q = query(collection(firestore,"cryptoHoldings"),where("userID", "==", props.data.docID));
+            const qSnapshot = await getDocs(q);
+            const result = qSnapshot.docs[0].data();
+            setCurrentHoldings(result);
+            console.log(result);
+        }
+        fetchData();
+    },[]);
 
     return(
         <>
         {props.data.approved &&
+        <>
         <div className="balance">
             <p>Balance: ${Math.floor(props.data.balance * 100) / 100}</p>
             <div className="wallet-actions">
@@ -26,6 +38,20 @@ export default function Wallet(props) {
                 </div>
             </div>
         </div>
+        {currentHoldings && Object.keys(currentHoldings.holdings).length > 0 && (
+                    <>
+                        <div className="holdings">You are currently holding:</div>
+                        <ul>
+                            {Object.keys(currentHoldings.holdings).map((key) => (
+                                <li key={key}>
+                                    <p>{key}: {currentHoldings.holdings[key]}</p>
+                                    
+                                </li>
+                            ))}
+                        </ul>
+                    </>
+                )}
+        </>
         }
         {!props.data.approved && <div>Your account must be approved before you can access wallet.</div>}
         </>

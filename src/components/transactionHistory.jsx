@@ -28,7 +28,7 @@ function TransHistory(props){
 
                 // Set the results to the state
                 setResults(bqResults);
-                console.log(bqResults)
+                setFilteredResults([...bqResults]);
             } catch (error) {
                 console.error("Error fetching documents: ", error);
             }
@@ -118,7 +118,8 @@ function TransHistory(props){
             </div>
             {errors.supportedCurrency && <div className="error">Please use a supported currency, using the abbreviation of the coins e.g. Bitcoin ={'>'} BTC </div>}
             <div className="filtered-results">
-                {filteredResults && filteredResults.map((transaction, index)=>{
+                
+                {filteredResults && filteredResults.length>0 ? (filteredResults.map((transaction, index)=>{
                     let tType = transaction.type;
                     return (
 
@@ -130,13 +131,18 @@ function TransHistory(props){
                             <p>Date: {transaction.Date.toDate().toLocaleString()}</p>
                             {transaction.recipient && <p>Recipient Username: {transaction.recipient}</p>}
                         </div>
-                    )
-                })}
+                    );
+                    })
+                
+                ) : (
+                    <div className="transaction">No transactions found with applied filter</div>
+                )}
+                
 
             </div>
         </>
         }
-        {!props.data.approved && <div>Your account must be approved before you can access wallet.</div>}
+        {!props.data.approved && <div>Your account must be approved before you can access transaction history.</div>}
         </>
     )
 

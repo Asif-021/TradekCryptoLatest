@@ -13,10 +13,10 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 
 
 
-// const email = "admin@email";
+const email = "admin@email";
 // const email = "user@email";
 // const email = "idtest@gmail";
-const email = localStorage.getItem("email");
+// const email = localStorage.getItem("email");
 // const email = "reject@gmail.com";
 // const email = "user@gmail.com";
 
@@ -30,19 +30,22 @@ export default function Account() {
         // Fetch data asynchronously
         async function getData() {
             try {
-                const q = query(collection(firestore, "User Info"), where('email', '==', email));
-                const result = await getDocs(q);
-                if (result.empty) {
-                    console.log("No results");
-                    setData(null); // Update data state
-                } else {
-                    const docID = result.docs[0].id;
-                    const userData = result.docs[0].data();
-                    const fullSet = {...userData, docID:docID };  
-                    setData(fullSet); // Update data state
+                // const email = localStorage.getItem("email");
+                if (email){
+                    const q = query(collection(firestore, "User Info"), where('email', '==', email));
+                    const result = await getDocs(q);
+                    if (result.empty) {
+                        console.log("No results");
+                        setData(null); // Update data state
+                    } else {
+                        const docID = result.docs[0].id;
+                        const userData = result.docs[0].data();
+                        const fullSet = {...userData, docID:docID };  
+                        setData(fullSet); // Update data state
+                    }
                 }
             } catch (error) {
-                console.error("Error getting documents: ", error);
+                    console.error("Error getting documents: ", error);
             }
         }
         getData(); // Call fetchData when component mounts

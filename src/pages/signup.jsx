@@ -5,7 +5,7 @@ import { auth, firestore } from '@/app/db.js';
 import { collection, addDoc } from 'firebase/firestore';
 import React from 'react';
 
-async function addDataToFireStore(name, surname, username, email, password) {
+async function addDataToFireStore(name, surname, username, email, password, phoneNumber, dob) {
   try {
     const dateJoined = new Date(); // Get current date/time
 
@@ -21,7 +21,9 @@ async function addDataToFireStore(name, surname, username, email, password) {
       approvedBy: "",
       balance: 0,
       dateJoined: dateJoined,
+      phoneNumber: phoneNumber,
       idURL: "",
+      dob : dob,
       rejected: false,
       blocked: false
     });
@@ -59,7 +61,7 @@ const SignUp = () => {
       e.preventDefault(); // Prevent default form submission behavior
     
       // Check if any of the fields are empty
-      if (!name || !surname || !username || !email || !password) {
+      if (!name || !surname || !username || !email || !password || !phoneNumber) {
         alert('Please fill out all fields.');
         return;
       }
@@ -81,7 +83,7 @@ const SignUp = () => {
         setEmail('');
         setPassword('');
     
-        const added = await addDataToFireStore(name, surname, username, email, password);
+        const added = await addDataToFireStore(name, surname, username, email, password, phoneNumber, dob);
         if (added) {
           setName('');
           setSurname('');

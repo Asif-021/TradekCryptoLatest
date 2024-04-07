@@ -22,7 +22,7 @@ export default function Pinfo(props){
             <div className="email">
                 <p>Email: {props.data.email}</p> 
                 {/* <button onClick={() => handleChangeInfo("changeEmail")}>Change email</button> */}
-                <Popup option="email" data={props.data} setData={props.setData}/>
+                {/* <Popup option="email" data={props.data} setData={props.setData}/> */}
             </div>
             
             <div className="username">
@@ -32,7 +32,7 @@ export default function Pinfo(props){
             </div>
 
             <div className="password">
-                <p>Password: {props.data.password}</p>
+                {/* <p>Password: {props.data.password}</p> */}
                 {/* <button>Change Password</button> */}
                 <Popup option="password" data={props.data} setData={props.setData} />
             </div>

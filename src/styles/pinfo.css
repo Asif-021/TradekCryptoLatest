@@ -5,6 +5,9 @@
     margin-bottom: 1rem;
 }
 
+.password{
+    justify-content: flex-end;
+}
 button{
     padding: 0.4rem 0.4rem;
     font-family: 'Radio Canada', sans-serif;

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { doc, updateDoc, query, where, collection, getDocs} from 'firebase/firestore';
-import {firestore} from "../app/db.js";
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import {auth, firestore} from "../app/db.js";
 import '../styles/pinfopopup.css';
 
 
@@ -44,11 +45,24 @@ async function changeSubmit(option, dbData, input, setData, setInputValue, setEr
                     togglePopup();
                     break;
                 case "password":
-                    await updateDoc(dbDoc, {"password": input}); 
-                    dummy.password = input;
-                    setData(dummy);
-                    console.log("Password changed to: ",input);
-                    togglePopup();
+                    // await updateDoc(dbDoc, {"password": input}); 
+                    // dummy.password = input;
+                    // setData(dummy);
+                    // console.log("Password changed to: ",input);
+                    // togglePopup();
+                    // break;
+
+                    // Send password reset email using Firebase Auth
+                    sendPasswordResetEmail(auth, dbData.email)
+                    .then(() => {
+                        // Password reset email sent!
+                        alert("An email has been send, you can reset your password as requested")
+
+                    })
+                    .catch((error) => {
+                        console.log(error)
+                        
+                    });
                     break;
                 default:
                     return null;
@@ -121,12 +135,19 @@ export default function Popup(props){
                             <h1>Change {option}</h1>
                             <div className="new-input">
                                 <div className={`input-container ${Object.keys(errors).length ? '-error' : ""}`}>
+                                    {option.toLowerCase() !== "password" ? (
+                                    <>
                                     <label>Please enter your new {option.toLowerCase()}: </label>
                                     <input type={inputType} value={inputValue} onChange={handleChange} placeholder={placeholder}/>
+                                    </>)
+                                    :(
+                                    <>
+                                    <p>Upon confirmation, you will receive an  email to reset your password.</p>
+                                    </>)}
                                 </div>
                                 {(errors.emailDupe || errors.usernameDupe) && <div className='error'>This {option.toLowerCase()} is already in use</div>}
                                 <div className="submitbtn-container">
-                                    <button id="submit" onClick={() => {changeSubmit(option, props.data, inputValue, props.setData, setInputValue, setErrors, togglePopup, errors)}}>Submit</button>
+                                    <button id="submit" onClick={() => {changeSubmit(option, props.data, inputValue, props.setData, setInputValue, setErrors, togglePopup, errors)}}>Confirm</button>
                                 </div>
                             </div>
                         </div>     
