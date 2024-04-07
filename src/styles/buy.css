@@ -3,17 +3,7 @@ body {
     margin: 0; /* Remove default margin to prevent white spaces around the edges */
     font-family: Arial, sans-serif; /* Optional: Set a default font for the page */
   }
-  .popup{
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    position: fixed;
-  }
-
-  .popup-inner{
+  .pop-container {
     border: solid white;
     position: absolute;
     top: 40%;
@@ -25,8 +15,33 @@ body {
     border-radius: 1.5rem;
     max-width: 70%;
     min-width: 70%;
-    min-height: 80%;
-  }
+}
+
+
+
+.popup-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.popup-inner h3 {
+    margin-bottom: 2rem;
+}
+
+.popup-inner input, .popup-inner select {
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    font-size: 1rem;
+}
+
+.popup-inner button {
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
 
   .market-container {
     color: white;
