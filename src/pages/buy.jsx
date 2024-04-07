@@ -5,7 +5,7 @@ import '../styles/buy.css';
 import Head from 'next/head.js';
 import Header from '@/components/header.jsx';
 import { firestore } from "../app/db.js";
-import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, updateDoc, addDoc } from 'firebase/firestore';
 
 const Buy = () => {
   const [cryptoData, selectCryptoData] = useState([]);
@@ -146,6 +146,16 @@ const Buy = () => {
             updatedHoldings.holdings[selectedCoin] = totalTransactionValue;
           }
           await updateDoc(cryptoHoldingsRef, updatedHoldings);
+          await  addDoc(collection(firestore, 'transaction history'),{  
+            type: 'Buy',
+            monetaryAmount: transactionAmount,
+            cryptoAmount: totalTransactionValue,
+            pricePerCoin: coinPrice,
+            date : new Date(),
+            currency: selectedCoin,
+            recipient: "",
+            userID: userId,
+          });
         } else if (sellPopupOpen) {
           const updatedHoldings = { ...crypto };
           console.log(updatedHoldings.holdings[selectedCoin])
@@ -157,6 +167,16 @@ const Buy = () => {
               const cryptoHoldingsRef = doc(firestore, 'cryptoHoldings', cryptoId);
               updatedHoldings.holdings[selectedCoin] -= totalTransactionValue;
               await updateDoc(cryptoHoldingsRef, updatedHoldings);
+              await  addDoc(collection(firestore, 'transaction history'),{  
+                type: 'Sell',
+                monetaryAmount: transactionAmount,
+                cryptoAmount: totalTransactionValue,
+                pricePerCoin: coinPrice,
+                date : new Date(),
+                currency: selectedCoin,
+                recipient: "",
+                userID: userId,
+              });
             } else {
               console.error('Insufficient holdings for this transaction.');
               return;
@@ -182,6 +202,17 @@ const Buy = () => {
                     const cryptoHoldingsRef = doc(firestore, 'cryptoHoldings', cryptoId);
                     console.log("processing")
                     await updateDoc(cryptoHoldingsRef, updatedHoldings);
+                    await  addDoc(collection(firestore, 'transaction history'),{  
+                      type: 'Convert',
+                      monetaryAmount: transactionAmount,
+                      cryptoAmount: totalTransactionValue,
+                      pricePerCoin: coinPrice,
+                      date : new Date(),
+                      currency: selectedCoin,
+                      convertedTo: exchangeCrypto,
+                      recipient: "",
+                      userID: userId,
+                    });
                     console.log("updated")
                 }else{
                     console.log("not enough holdings")
