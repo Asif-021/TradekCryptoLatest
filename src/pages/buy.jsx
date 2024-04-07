@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import CryptoChart from '../components/CryptoChart.jsx';
 import axios from 'axios';
-import '../styles/market.css';
+import '../styles/buy.css';
 import Head from 'next/head.js';
 import Header from '@/components/header.jsx';
 import { firestore } from "../app/db.js";
-import { collection, getDocs, query, where, doc, updateDoc, setDoc } from 'firebase/firestore';
+import { collection, getDocs, query, where, doc, updateDoc } from 'firebase/firestore';
 
 const Buy = () => {
   const [cryptoData, selectCryptoData] = useState([]);
@@ -13,12 +13,16 @@ const Buy = () => {
   const [loading, selectLoading] = useState(true);
   const [buyPopupOpen, setBuyPopupOpen] = useState(false);
   const [sellPopupOpen, setSellPopupOpen] = useState(false);
+  const [exchangePopupOpen, setExchangePopupOpen] = useState(false);
   const [transactionAmount, setTransactionAmount] = useState('');
   const [balance, setBalance] = useState(0);
   const [userId, setUserId] = useState('null');
-  const [cryptoId, setcryptoId] = useState('null');
-  const [crypto, setcrypto] = useState([]);
+  const [cryptoId, setCryptoId] = useState('null');
+  const [crypto, setCrypto] = useState([]);
+  const [exchangeCrypto, setExchangeCrypto] = useState('');
+
   const useremail = "user@email"; // Make sure to assign the correct user
+
   useEffect(() => {
     const fetchCryptoData = async () => {
       try {
@@ -63,21 +67,22 @@ const Buy = () => {
 
     fetchUserBalance();
   }, []);
+
   useEffect(() => {
-    const fetchcryptoHoldings = async () => {
+    const fetchCryptoHoldings = async () => {
       try {
         const q = query(collection(firestore, 'cryptoHoldings'), where('userID', '==', userId));
         const querySnapshot = await getDocs(q);
         querySnapshot.forEach((doc) => {
-          setcryptoId(doc.id)
-          setcrypto(doc.data());
+          setCryptoId(doc.id)
+          setCrypto(doc.data());
         });
       } catch (error) {
         console.error('Error fetching user crypto', error);
       }
     };
 
-    fetchcryptoHoldings ();
+    fetchCryptoHoldings();
   }, [userId]);
 
   const handleSelectCoin = (coin) => {
@@ -94,12 +99,21 @@ const Buy = () => {
     setSellPopupOpen(true);
   };
 
+  const handleExchange = (coin) => {
+    selectSelectedCoin(coin);
+    setExchangePopupOpen(true);
+  };
+
   const handleBuyPopupClose = () => {
     setBuyPopupOpen(false);
   };
 
   const handleSellPopupClose = () => {
     setSellPopupOpen(false);
+  };
+
+  const handleExchangePopupClose = () => {
+    setExchangePopupOpen(false);
   };
 
   const handleTransaction = async () => {
@@ -117,49 +131,32 @@ const Buy = () => {
         if (buyPopupOpen) {
           const requiredAmount = totalTransactionValue * coinPrice;
           if (requiredAmount > balance) {
-            console.log(balance)
             console.error('Insufficient balance for this transaction.');
             return;
           }
           const newBalance = balance - requiredAmount;
           const userDocRef = doc(firestore, 'User Info', userId);
-          console.log(userDocRef)
           await updateDoc(userDocRef, { "balance": newBalance });
 
-          console.log(cryptoId)
-          console.log(crypto)
-
           const cryptoHoldingsRef = doc(firestore, 'cryptoHoldings', cryptoId);
-          console.log(cryptoHoldingsRef)
           const updatedHoldings = { ...crypto };
-          console.log(updatedHoldings)
-          console.log(selectedCoin)
-          console.log(updatedHoldings.holdings[selectedCoin])
           if (updatedHoldings.holdings[selectedCoin]) {
             updatedHoldings.holdings[selectedCoin] += totalTransactionValue;
           } else {
             updatedHoldings.holdings[selectedCoin] = totalTransactionValue;
           }
           await updateDoc(cryptoHoldingsRef, updatedHoldings);
-          console.log("successfully done")
         } else if (sellPopupOpen) {
-          console.log(crypto)
           const updatedHoldings = { ...crypto };
+          console.log(updatedHoldings.holdings[selectedCoin])
           if (updatedHoldings.holdings[selectedCoin]) {
             if (updatedHoldings.holdings[selectedCoin] >= totalTransactionValue) {
               const newBalance = balance + (totalTransactionValue * coinPrice);
-              console.log(newBalance)
               const userDocRef = doc(firestore, 'User Info', userId);
               await updateDoc(userDocRef,{"balance":newBalance})
               const cryptoHoldingsRef = doc(firestore, 'cryptoHoldings', cryptoId);
-              console.log(cryptoHoldingsRef)
-              await updateDoc(cryptoHoldingsRef, { balance: newBalance });
-
-              console.log(crypto)
-              const updatedHoldings = { ...crypto };
               updatedHoldings.holdings[selectedCoin] -= totalTransactionValue;
               await updateDoc(cryptoHoldingsRef, updatedHoldings);
-              console.log("succefully done")
             } else {
               console.error('Insufficient holdings for this transaction.');
               return;
@@ -168,13 +165,38 @@ const Buy = () => {
             console.error('No holdings found for this user.');
             return;
           }
+        } else if (exchangePopupOpen) {
+            const updatedHoldings = { ...crypto };
+            const exchangeCryptoData = cryptoData.find(crypto => crypto.id === exchangeCrypto);
+            if (!exchangeCryptoData) {
+              console.error('Selected exchange coin data not found.');
+              return;
+            }
+            if (updatedHoldings.holdings[selectedCoin]){
+                if (updatedHoldings.holdings[selectedCoin]>= transactionAmount){
+                    updatedHoldings.holdings[selectedCoin]-=transactionAmount
+                    const equivalent= (transactionAmount*coinPrice)/ (exchangeCryptoData.amount)
+                    console.log(equivalent)
+                    //updatedHoldings.holdings[exchangeCrypto]+=equivalent
+                    updatedHoldings.holdings[exchangeCrypto] = (updatedHoldings.holdings[exchangeCrypto] || 0) + equivalent;
+                    const cryptoHoldingsRef = doc(firestore, 'cryptoHoldings', cryptoId);
+                    console.log("processing")
+                    await updateDoc(cryptoHoldingsRef, updatedHoldings);
+                    console.log("updated")
+                }else{
+                    console.log("not enough holdings")
+                }
+            }else{
+                console.log("Holdings not found ")
+            }
         }
-      } else {
-        console.error('Please select a coin and enter transaction amount.');
-      }
+        } else {
+            console.error('Please select a coin and enter transaction amount.');
+        }
 
       handleBuyPopupClose();
       handleSellPopupClose();
+      handleExchangePopupClose();
       setTransactionAmount('');
     } catch (error) {
       console.error('Error executing transaction:', error);
@@ -197,8 +219,9 @@ const Buy = () => {
                 <div className="cryptoName">{crypto.id.toUpperCase()}/{crypto.currency}</div>
                 <div className="cryptoPrice">${crypto.amount.toLocaleString()}</div>
                 <button onClick={() => handleSelectCoin(crypto.id)}>View Chart</button>
-                <button onClick={()=>handleBuy(crypto.id)}>Buy</button>
-                <button onClick={()=>handleSell(crypto.id)}>Sell</button>
+                <button onClick={() => handleBuy(crypto.id)}>Buy</button>
+                <button onClick={() => handleSell(crypto.id)}>Sell</button>
+                <button onClick={() => handleExchange(crypto.id)}>Exchange</button>
               </div>
             ))}
           </div>
@@ -208,27 +231,57 @@ const Buy = () => {
         </div>
       </div>
       {buyPopupOpen && (
-        <div className="popup">
-          <div className="popup-inner">
-            <h3>Buy {selectedCoin}</h3>
-            <input type="number" value={transactionAmount} onChange={(e) => setTransactionAmount(e.target.value)} />
-            <button onClick={handleTransaction}>Confirm Buy</button>
-            <button onClick={handleBuyPopupClose}>Cancel</button>
+        <div className="pop-container">
+          <div className="pop">
+            <div className="popup-inner">
+              <h3>Buy {selectedCoin}</h3>
+              <input type="number" placeholder="Amount in Dollars" value={transactionAmount} onChange={(e) => setTransactionAmount(e.target.value)} />
+              <button onClick={handleTransaction}>Confirm Buy</button>
+              <button onClick={handleBuyPopupClose}>Cancel</button>
+            </div>
           </div>
+          <div className="overlay"></div>
         </div>
       )}
       {sellPopupOpen && (
-        <div className="popup">
-          <div className="popup-inner">
-            <h3>Sell {selectedCoin}</h3>
-            <input type="number" value={transactionAmount} onChange={(e) => setTransactionAmount(e.target.value)} />
-            <button onClick={handleTransaction}>Confirm Sell</button>
-            <button onClick={handleSellPopupClose}>Cancel</button>
+        <div className="pop-container">
+          <div className="pop">
+            <div className="popup-inner">
+              <h3>Sell {selectedCoin}</h3>
+              <input type="number" placeholder="Amount in Dollars" value={transactionAmount} onChange={(e) => setTransactionAmount(e.target.value)} />
+              <button onClick={handleTransaction}>Confirm Sell</button>
+              <button onClick={handleSellPopupClose}>Cancel</button>
+            </div>
           </div>
+          <div className="overlay"></div>
+        </div>
+      )}
+      {exchangePopupOpen && (
+        <div className="pop-container">
+          <div className="pop">
+            <div className="popup-inner">
+              <h3>Exchange {selectedCoin}</h3>
+              <select value={exchangeCrypto} onChange={(e) => setExchangeCrypto(e.target.value)}>
+                <option value="">Exchange for</option>
+                <option value="bitcoin">Bitcoin</option>
+                <option value="ethereum">Ethereum</option>
+                <option value="ripple">Ripple</option>
+                <option value="litecoin">Litecoin</option>
+                <option value="dogecoin">Dogecoin</option>
+                <option value="solana">Solana</option>
+                <option value="polkadot">Polkadot</option>
+              </select>
+              <input type="number" placeholder="Enter quantity to exchange" value={transactionAmount} onChange={(e) => setTransactionAmount(e.target.value)} />
+              <button onClick={handleTransaction}>Confirm Exchange</button>
+              <button onClick={handleExchangePopupClose}>Cancel</button>
+            </div>
+          </div>
+          <div className="overlay"></div>
         </div>
       )}
     </>
   );
+  
 };
 
 export default Buy;

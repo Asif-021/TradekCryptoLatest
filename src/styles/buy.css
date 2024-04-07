@@ -12,12 +12,7 @@ body {
     bottom: 0;
     position: fixed;
   }
-  h2{
-    font-size: 10rem;
-    color: white;
-    padding-bottom: 7rem;
-    text-align: center;
-  }
+
   .popup-inner{
     border: solid white;
     position: absolute;
@@ -32,6 +27,7 @@ body {
     min-width: 70%;
     min-height: 80%;
   }
+
   .market-container {
     color: white;
     background-color: #1c1e22;
@@ -43,7 +39,6 @@ body {
   }
   
   .market-list-container {
-    padding-top: 100px;
     width: 100%;
   }
   
