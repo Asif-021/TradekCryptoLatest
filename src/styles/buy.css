@@ -1,0 +1,78 @@
+body {
+    background-color: #1c1e22; /* Set the body background to the same color */
+    margin: 0; /* Remove default margin to prevent white spaces around the edges */
+    font-family: Arial, sans-serif; /* Optional: Set a default font for the page */
+  }
+  .popup{
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+  }
+  h2{
+    font-size: 10rem;
+    color: white;
+    padding-bottom: 7rem;
+    text-align: center;
+  }
+  .popup-inner{
+    border: solid white;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    line-height: 1.5;
+    background: hsl(228, 25%, 22%);
+    padding: 3.5% 5%;
+    border-radius: 1.5rem;
+    max-width: 70%;
+    min-width: 70%;
+    min-height: 80%;
+  }
+  .market-container {
+    color: white;
+    background-color: #1c1e22;
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .market-list-container {
+    padding-top: 100px;
+    width: 100%;
+  }
+  
+  .chart-container {
+    width: 100%;
+  }
+  
+  .crypto-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .cryptoItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: #2a2d34;
+    border-radius: 5px;
+  }
+  
+  .cryptoName {
+    font-weight: bold;
+  }
+  
+  .cryptoPrice {
+    font-weight: lighter;
+  }
+  
+  /* Add any additional global styles you might need */
+  

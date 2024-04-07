@@ -9,6 +9,7 @@ async function changeSubmit(option, dbData, input, setData, setInputValue, setEr
     
     try{
         const dbDoc = doc(firestore, 'User Info', dbData.docID)
+        console.log(dbData)
         const dummy = {...dbData}
         if  (input != ""){  
             switch (option.toLowerCase()){
