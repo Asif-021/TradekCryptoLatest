@@ -1,12 +1,13 @@
+"use client"
 import styles from "../styles/homepage.module.css"; 
 import Link from "next/link";
 import "./forum";
-import Header from "../components/header.jsx";
+import NavBar from "../components/navbar.jsx";
 
 function HomePage() {
   return (
     <div>
-      <Header />
+      <NavBar />
       <div className={styles.Homepage}>
 
         {/* header */}

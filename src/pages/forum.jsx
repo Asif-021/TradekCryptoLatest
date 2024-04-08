@@ -16,7 +16,7 @@ import {
 } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth'; // Corrected import for onAuthStateChanged
 import '../styles/ForumPage.css';
-import Header from '@/components/Header'; // Adjust the import path as necessary
+import NavBar from '@/components/navbar'; // Adjust the import path as necessary
 
 const formatDate = (firebaseTimestamp) => {
   if (!firebaseTimestamp) return '';
@@ -45,6 +45,10 @@ const Page = () => {
     const unsubscribe = onAuthStateChanged(auth, user => {
       setIsLoggedIn(!!user);
     });
+
+    // Check if user is logged in
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    setIsLoggedIn(isLoggedIn);
 
     const fetchPostsAndComments = async () => {
       const postsQuery = query(collection(firestore, 'posts'), orderBy('createdAt', 'desc'));
@@ -161,7 +165,7 @@ const Page = () => {
 
   return (
     <>
-      <Header />
+      <NavBar />
       <div className="forum-container">
         <h1 className="forum-title">Forum Posts</h1>
         {isLoggedIn ? (

@@ -1,7 +1,7 @@
 import styles from "../styles/homepageSI.module.css";
 import Link from "next/link";
 import "./forum";
-import Header from "../components/header.jsx";
+import Header from "../components/navbar.jsx";
 
 function HomePageSI() {
   const handleBuySell = () => {

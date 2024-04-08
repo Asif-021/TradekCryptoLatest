@@ -14,9 +14,6 @@ const SignIn = () => {
       // Sign in with email and password
       await signInWithEmailAndPassword(auth, email, password); // Pass `auth` as first parameter
       
-      // If sign-in is successful, set localstorage variables and redirect to the homepageSI
-      localStorage.setItem('isLoggedIn', true);
-      localStorage.setItem('email', email);
       router.push('/homePage');
     } catch (error) {
       // Display an error message if sign-in fails

@@ -1,5 +1,5 @@
 import React from "react";
-import Header from "../components/header.jsx";
+import NavBar from "../components/navbar.jsx";
 import Link from "next/link";
 import HomePage from "@/pages/homePage.js";
 

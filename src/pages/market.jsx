@@ -3,7 +3,7 @@ import CryptoChart from '../components/CryptoChart.jsx';
 import axios from 'axios';
 import '../styles/market.css';
 import Head from 'next/head.js';
-import Header from '@/components/header.jsx';
+import Header from '@/components/navbar.jsx';
 
 const Market = () => {
   const [cryptoData, selectCryptoData] = useState([]);
