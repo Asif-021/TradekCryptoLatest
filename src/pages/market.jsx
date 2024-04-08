@@ -20,6 +20,7 @@ const Market = () => {
   const [cryptoId, setCryptoId] = useState('null');
   const [crypto, setCrypto] = useState([]);
   const [exchangeCrypto, setExchangeCrypto] = useState('');
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
     const fetchCryptoData = async () => {
@@ -89,6 +90,17 @@ const Market = () => {
   
     fetchCryptoHoldings();
   }, [userId]);
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+        if (user) {
+           setLoggedIn(true);
+        } else{
+          setLoggedIn(false)
+        }
+    });
+
+    return () => unsubscribe();
+}, []);
 
   const handleSelectCoin = (coin) => {
     selectSelectedCoin(coin);
@@ -192,7 +204,6 @@ const Market = () => {
               return;
             }
           } else {
-            console.error('No holdings found for this user.');
             alert("No holdings found for : " +selectedCoin)
             return;
           }
@@ -251,7 +262,6 @@ const Market = () => {
   if (loading) {
     return <div className="market-container">Loading market data...</div>;
   }
-  const isLoggedIn = auth.currentUser ? true : false;
 
   return (
     <>
