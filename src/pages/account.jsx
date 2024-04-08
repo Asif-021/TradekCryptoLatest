@@ -7,6 +7,7 @@ import Wallet from "../components/wallet";
 import Management from "../components/management.jsx";
 import SearchAccount from "@/components/searchAccount";
 import TransHistory from "@/components/transactionHistory";
+import Portfolio from "../components/portfolio";
 import { useState, useEffect } from "react";
 import {firestore} from "../app/db.js";
 import { collection, getDocs, query, where } from 'firebase/firestore';
@@ -76,7 +77,7 @@ export default function Account() {
             case "transHistory":
                     return  <TransHistory data={data} setData={setData}/>;
             case "portfolio":
-                return  `Portfolio`;
+                return return <Portfolio data={data} setData={setData}/>;;
             case "management":
                 return <Management data={data} setData={setData}/>;
             case "searchAccount":
