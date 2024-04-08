@@ -8,23 +8,23 @@
 }
 
 .bg-gray-800 {
-    padding: 3em;
-    background: rgba(255, 255, 255, 0.1); 
     border-radius: 10px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); 
+    padding: 3em;
+    box-shadow: 0 4px 8px 0 black; 
     backdrop-filter: blur(8px); 
-    border: 1px solid rgba(255, 255, 255, 0.18); 
-    width: 30%; 
+    border: 1px solid gray; 
+    width: 20%; 
+    background: rgba(255, 255, 255, 0.1); 
 }
 
 
 .text-white {
-    color: #ffffff; 
+    color: white; 
 }
 
 .text-2xl {
-    font-size: 2em; 
     margin-bottom: 1em; 
+    font-size: 2em; 
 }
 
 
@@ -33,21 +33,21 @@ input[type="email"],
 input[type="password"],
 input[type="date"] {
     width: 100%; 
-    padding: 1em; 
     margin-bottom: 0.5em; 
     border-radius: 5px; 
+    padding: 1em; 
     border: 1px solid #23395B; 
-    background: rgba(255, 255, 255, 0.2); 
-    color: #ffffff; 
+    color: white; 
     outline: none; 
+    background: darkgray; 
 }
 
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus,
 input[type="date"]:focus {
-    border: 1px solid #CBF7ED; 
-    background: rgba(255, 255, 255, 0.3); 
+    border: 1px solid cyan; 
+    background: gray; 
     box-shadow: none; 
 }
 
@@ -65,12 +65,12 @@ button {
 
 
 .bg-indigo-600 {
-    background-color: #4c96d7; 
-    color: #ffffff; 
+    background-color: lightseagreen; 
+    color: white; 
 }
 
 .bg-indigo-600:hover {
-    background-color: #67a9f6; 
+    background-color: lightblue; 
 }
 
 .bg-gray-600 {
@@ -80,11 +80,4 @@ button {
 
 .bg-gray-600:hover {
     background-color: #4A5568; 
-}
-
-/* Responsive styles */
-@media screen and (max-width: 768px) {
-    .bg-gray-800 {
-        width: 80%; 
-    }
 }
