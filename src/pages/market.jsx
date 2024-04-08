@@ -267,8 +267,9 @@ const Market = () => {
     <>
       <Header />
       <div className="market-container">
+      <h2>Market</h2>
         <div className="market-list-container">
-          <h2>Market</h2>
+          
           <div className="crypto-list">
             {cryptoData.map((crypto, index) => (
               <div className="cryptoItem" key={index}>
