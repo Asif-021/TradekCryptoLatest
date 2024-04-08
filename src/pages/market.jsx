@@ -3,8 +3,8 @@ import CryptoChart from '../components/CryptoChart.jsx';
 import axios from 'axios';
 import '../styles/market.css';
 import Head from 'next/head.js';
-import Header from '@/components/header.jsx';
-import { firestore } from "../app/db.js";
+import Header from '@/components/navbar.jsx';
+import { firestore,auth } from "../app/db.js";
 import { collection, getDocs, query, where, doc, updateDoc, addDoc } from 'firebase/firestore';
 
 const Market = () => {
@@ -20,8 +20,6 @@ const Market = () => {
   const [cryptoId, setCryptoId] = useState('null');
   const [crypto, setCrypto] = useState([]);
   const [exchangeCrypto, setExchangeCrypto] = useState('');
-
-  const useremail = "user@email";
 
   useEffect(() => {
     const fetchCryptoData = async () => {
@@ -54,34 +52,41 @@ const Market = () => {
   useEffect(() => {
     const fetchUserBalance = async () => {
       try {
-        const q = query(collection(firestore, 'User Info'), where('email', '==', useremail));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          setUserId(doc.id)
-          setBalance(doc.data().balance);
-        });
+        const user = auth.currentUser;
+        if (user) { // Check if a user is logged in
+          const q = query(collection(firestore, 'User Info'), where('email', '==', user.email));
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc) => {
+            console.log(doc.id)
+            setUserId(doc.id)
+            setBalance(doc.data().balance);
+          });
+        }
       } catch (error) {
         console.error('Error fetching user balance:', error);
       }
     };
-
+  
     fetchUserBalance();
   }, []);
-
+  
   useEffect(() => {
     const fetchCryptoHoldings = async () => {
       try {
-        const q = query(collection(firestore, 'cryptoHoldings'), where('userID', '==', userId));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach((doc) => {
-          setCryptoId(doc.id)
-          setCrypto(doc.data());
-        });
+        const user = auth.currentUser;
+        if (user) { // Check if a user is logged in
+          const q = query(collection(firestore, 'cryptoHoldings'), where('userID', '==', userId));
+          const querySnapshot = await getDocs(q);
+          querySnapshot.forEach((doc) => {
+            setCryptoId(doc.id)
+            setCrypto(doc.data());
+          });
+        }
       } catch (error) {
         console.error('Error fetching user crypto', error);
       }
     };
-
+  
     fetchCryptoHoldings();
   }, [userId]);
 
@@ -130,8 +135,10 @@ const Market = () => {
 
         if (buyPopupOpen) {
           const requiredAmount = totalTransactionValue * coinPrice;
+          console.log(userId)
           if (requiredAmount > balance) {
             console.error('Insufficient balance for this transaction.');
+            alert('Insufficient balance for this transaction.')
             return;
           }
           const newBalance = balance - requiredAmount;
@@ -156,6 +163,7 @@ const Market = () => {
             recipient: "",
             userID: userId,
           });
+          alert("You successfully purchased "+totalTransactionValue+" " +selectedCoin+" for "+transactionAmount+"$")
         } else if (sellPopupOpen) {
           const updatedHoldings = { ...crypto };
           console.log(updatedHoldings.holdings[selectedCoin])
@@ -177,12 +185,15 @@ const Market = () => {
                 recipient: "",
                 userID: userId,
               });
+              alert("You successfully sold "+totalTransactionValue+" "+selectedCoin+" for "+transactionAmount+"$")
             } else {
               console.error('Insufficient holdings for this transaction.');
+              alert("Insufficient " +selectedCoin+" holdings for this transaction.");
               return;
             }
           } else {
             console.error('No holdings found for this user.');
+            alert("No holdings found for : " +selectedCoin)
             return;
           }
         } else if (exchangePopupOpen) {
@@ -214,11 +225,14 @@ const Market = () => {
                       userID: userId,
                     });
                     console.log("updated")
+                    alert("You successfully Exchanged "+transactionAmount+" "+selectedCoin+" for " +equivalent+" "+exchangeCrypto)
                 }else{
                     console.log("not enough holdings")
+                    alert("Not enough " +selectedCoin+" holdings")
                 }
             }else{
                 console.log("Holdings not found ")
+                alert("No "+selectedCoin+ " holdings  in wallet")
             }
         }
         } else {
@@ -237,7 +251,7 @@ const Market = () => {
   if (loading) {
     return <div className="market-container">Loading market data...</div>;
   }
-  const isLoggedIn = true;
+  const isLoggedIn = auth.currentUser ? true : false;
 
   return (
     <>
@@ -251,7 +265,7 @@ const Market = () => {
                 <div className="cryptoName">{crypto.id.toUpperCase()}/{crypto.currency}</div>
                 <div className="cryptoPrice">${crypto.amount.toLocaleString()}</div>
                 <button onClick={() => handleSelectCoin(crypto.id)}>View Chart</button>
-                {isLoggedIn ? (
+                {isLoggedIn ?  (
                 <>
                   <button onClick={() => handleBuy(crypto.id)}>Buy</button>
                   <button onClick={() => handleSell(crypto.id)}>Sell</button>
