@@ -208,6 +208,10 @@ const Market = () => {
             return;
           }
         } else if (exchangePopupOpen) {
+            if (exchangeCrypto === selectedCoin) {
+              alert("You cannot exchange the same cryptocurrency ("+selectedCoin +" for "+selectedCoin+")");
+              return;
+            }
             const updatedHoldings = { ...crypto };
             const exchangeCryptoData = cryptoData.find(crypto => crypto.id === exchangeCrypto);
             if (!exchangeCryptoData) {
