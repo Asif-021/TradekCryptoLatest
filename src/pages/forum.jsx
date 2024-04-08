@@ -1,10 +1,22 @@
 'use client'
 import { useEffect, useState } from 'react';
-import { firestore } from '../app/db.js';
-import { collection, getDocs, addDoc, query, where, serverTimestamp, Timestamp, orderBy } from 'firebase/firestore';
+import { useRouter } from 'next/router';
+import { firestore, auth } from '../app/db'; // Adjust the path as necessary
+import {
+  collection,
+  getDocs,
+  addDoc,
+  query,
+  where,
+  serverTimestamp,
+  Timestamp,
+  orderBy,
+} from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth'; // Corrected import for onAuthStateChanged
 import '../styles/ForumPage.css';
-import Head from 'next/head.js';
-import Header from '@/components/header.jsx';
+import Header from '@/components/Header'; // Adjust the import path as necessary
+
+
 
 const formatDate = (firebaseTimestamp) => {
   if (!firebaseTimestamp) return '';
@@ -14,7 +26,7 @@ const formatDate = (firebaseTimestamp) => {
   } else if (firebaseTimestamp instanceof Date) {
     date = firebaseTimestamp;
   } else {
-    return ''; // Handle unexpected types gracefully
+    return '';
   }
   return date.toLocaleString();
 };
@@ -25,21 +37,25 @@ const Page = () => {
   const [newPostContent, setNewPostContent] = useState('');
   const [newComments, setNewComments] = useState({});
   const [visibleCommentFormPostId, setVisibleCommentFormPostId] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      setIsLoggedIn(!!user);
+    });
+
     const fetchPostsAndComments = async () => {
-      // Adjusted to include orderBy for posts
       const postsQuery = query(collection(firestore, 'posts'), orderBy('createdAt', 'desc'));
       const postsSnapshot = await getDocs(postsQuery);
-      
+
       const postsDataPromises = postsSnapshot.docs.map(async (doc) => {
         const post = {
           id: doc.id,
           ...doc.data(),
           comments: [],
         };
-        
-        // Adjusted to include orderBy for comments
+
         const commentsQuery = query(
           collection(firestore, 'comments'),
           where('postId', '==', doc.id),
@@ -58,13 +74,20 @@ const Page = () => {
     };
 
     fetchPostsAndComments();
+
+    return () => unsubscribe();
   }, []);
 
   const handleSubmitPost = async (e) => {
     e.preventDefault();
+    const user = auth.currentUser;
+
+    const userName = user ? user.displayName : "Anonymous";
+
     const docRef = await addDoc(collection(firestore, 'posts'), {
       title: newPostTitle,
       content: newPostContent,
+      userName: userName,
       createdAt: serverTimestamp(),
     });
 
@@ -72,13 +95,15 @@ const Page = () => {
       id: docRef.id,
       title: newPostTitle,
       content: newPostContent,
+      userName: userName,
       comments: [],
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     setPosts([newPost, ...posts]);
     setNewPostTitle('');
     setNewPostContent('');
+    setShowPostForm(false);
   };
 
   const handleCommentChange = (postId, text) => {
@@ -99,11 +124,10 @@ const Page = () => {
       date = firebaseTimestamp;
     }
 
-    // Check if 'date' is a Date object before calling 'toLocaleString()'
     if (date instanceof Date) {
       return date.toLocaleString();
     } else {
-      return ''; 
+      return '';
     }
   };
 
@@ -117,7 +141,6 @@ const Page = () => {
     });
 
 
-    // Update the local state to include the new comment without refetching from Firestore
     const updatedPosts = posts.map(post => {
       if (post.id === postId) {
         return {
@@ -133,69 +156,105 @@ const Page = () => {
     setNewComments({ ...newComments, [postId]: '' });
   };
 
+  const [showPostForm, setShowPostForm] = useState(false);
+
+  const handleCancelComment = () => {
+    setVisibleCommentFormPostId(null); // Hide the comment form
+  };
 
   return (
     <>
-    <Header/>
-    <div className="forum-container">
-      <h1 className="forum-title">Forum Posts</h1>
-      <form onSubmit={handleSubmitPost} className="post-form">
-        <input
-          className="post-input"
-          type="text"
-          value={newPostTitle}
-          onChange={(e) => setNewPostTitle(e.target.value)}
-          placeholder="Post title"
-          required
-        />
-        <textarea
-          className="post-textarea"
-          value={newPostContent}
-          onChange={(e) => setNewPostContent(e.target.value)}
-          placeholder="Post content"
-          required
-        ></textarea>
-        <button className="submit-btn" type="submit">Submit Post</button>
-      </form>
 
-      {posts.map((post) => (
-        <div key={post.id} className="post-item">
-          <h2 className="post-title">{post.title}</h2>
-          <p className="post-content">{post.content}</p>
-          <small>{formatDate(post.createdAt)}</small>
+      <Header />
+      <div className="forum-container">
+        <h1 className="forum-title">Forum Posts</h1>
 
-          <div className="comments-container">
-            {post.comments.length > 0 ? (
-              post.comments.map((comment) => (
-                <div key={comment.id} className="comment-item">
-                  <p className="comment-content">{comment.content}</p>
-                  <small>{formatDate(comment.createdAt)}</small>
+        {isLoggedIn ? (
+          !showPostForm && (
+            <button className="toggle-post-form-btn" onClick={() => setShowPostForm(true)}>Post</button>
+          )
+        ) : (
+          <button className="ltoggle-post-form-btn" onClick={() => router.push('/signin')}>Login to Post</button>
+        )}
+
+        {showPostForm && (
+          <form onSubmit={handleSubmitPost} className="post-form">
+            <input
+              className="post-input"
+              type="text"
+              value={newPostTitle}
+              onChange={(e) => setNewPostTitle(e.target.value)}
+              placeholder="Post title"
+              required
+            />
+            <textarea
+              className="post-textarea"
+              value={newPostContent}
+              onChange={(e) => setNewPostContent(e.target.value)}
+              placeholder="Post content"
+              required
+            ></textarea>
+            <button className="submit-btn" type="submit">Submit Post</button>
+            <button type="button" className="cancel-post-btn" onClick={() => setShowPostForm(false)}>Cancel</button>
+          </form>
+        )}
+
+        {posts.map((post) => (
+
+          <div key={post.id} className="post-item">
+            <div className="data__wrap">
+              <div className="text__post">
+                <div className="post-header">
+                  <h2 className="post-title">{post.title}</h2>
+                  <span>Posted by: {post.userName}</span> 
                 </div>
-              ))
+                <p className="post-content">{post.content}</p>
+              </div>
+              <div className="time__post">
+                <small>{formatDate(post.createdAt)}</small>
+              </div>
+            </div>
+
+            <div className="comments-container">
+              {post.comments.length > 0 ? (
+                post.comments.map((comment) => (
+                  <div key={comment.id} className="comment-item">
+                    <p className="comment-content">{comment.content}</p>
+                    <small>{formatDate(comment.createdAt)}</small>
+                  </div>
+                ))
+              ) : (
+                <p>No comments yet.</p>
+              )}
+            </div>
+
+            {visibleCommentFormPostId === post.id ? (
+              <div className="comment-form">
+                <textarea
+                  value={newComments[post.id] || ''}
+                  onChange={(e) => setNewComments({ ...newComments, [post.id]: e.target.value })}
+                  placeholder="Write a comment..."
+                  className="comment-input"
+                ></textarea>
+                <div>
+                  <button className="submit-comment-btn" onClick={() => handleSubmitComment(post.id)}>Post Comment</button>
+                  <button type="button" className="cancel-comment-btn" onClick={() => setVisibleCommentFormPostId(null)}>Cancel</button>
+                </div>
+              </div>
             ) : (
-              <p>No comments yet.</p>
+              <button className="show-add-comment-btn" onClick={() => handleShowAddComment(post.id)}>Add Comment</button>
             )}
           </div>
 
 
-          {visibleCommentFormPostId === post.id ? (
-            <div className="comment-form">
-              <textarea
-                value={newComments[post.id] || ''}
-                onChange={(e) => setNewComments({ ...newComments, [post.id]: e.target.value })}
-                placeholder="Write a comment..."
-                className="comment-input"
-              ></textarea>
-              <button className="submit-comment-btn" onClick={() => handleSubmitComment(post.id)}>Post Comment</button>
-            </div>
-          ) : (
-            <button className="show-add-comment-btn" onClick={() => handleShowAddComment(post.id)}>Add Comment</button>
-          )}
-        </div>
-      ))}
-    </div>
+
+        ))}
+      </div>
     </>
   );
-};
 
+
+
+
+};
 export default Page;
