@@ -5,7 +5,9 @@ import { firestore, auth } from '../app/db'; // Adjust the path as necessary
 import {
   collection,
   getDocs,
+  getDoc,
   addDoc,
+  doc,
   query,
   where,
   serverTimestamp,
@@ -15,8 +17,6 @@ import {
 import { onAuthStateChanged } from 'firebase/auth'; // Corrected import for onAuthStateChanged
 import '../styles/ForumPage.css';
 import Header from '@/components/Header'; // Adjust the import path as necessary
-
-
 
 const formatDate = (firebaseTimestamp) => {
   if (!firebaseTimestamp) return '';
@@ -38,6 +38,7 @@ const Page = () => {
   const [newComments, setNewComments] = useState({});
   const [visibleCommentFormPostId, setVisibleCommentFormPostId] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showPostForm, setShowPostForm] = useState(false); // Added state for showPostForm
   const router = useRouter();
 
   useEffect(() => {
@@ -81,30 +82,47 @@ const Page = () => {
   const handleSubmitPost = async (e) => {
     e.preventDefault();
     const user = auth.currentUser;
-
-    const userName = user ? user.displayName : "Anonymous";
-
-    const docRef = await addDoc(collection(firestore, 'posts'), {
-      title: newPostTitle,
-      content: newPostContent,
-      userName: userName,
-      createdAt: serverTimestamp(),
-    });
-
-    const newPost = {
-      id: docRef.id,
-      title: newPostTitle,
-      content: newPostContent,
-      userName: userName,
-      comments: [],
-      createdAt: new Date(),
-    };
-
-    setPosts([newPost, ...posts]);
-    setNewPostTitle('');
-    setNewPostContent('');
-    setShowPostForm(false);
+  
+    if (!user) {
+      console.error("User is not logged in.");
+      return;
+    }
+  
+    try {
+      await user.reload();
+  
+      // Correctly reference the "User Info" collection and use the UID to fetch the user document
+      const userDataDoc = await getDoc(doc(firestore, 'user info', user.uid));
+      // Extract the username; use "Anonymous" as a fallback if the document or username doesn't exist
+      const userName = userDataDoc.exists() ? userDataDoc.data().username : "Anonymous";
+      
+      // Proceed to create a new post with the fetched username
+      const docRef = await addDoc(collection(firestore, 'posts'), {
+        title: newPostTitle,
+        content: newPostContent,
+        userName: userName, // Use the fetched username
+        createdAt: serverTimestamp(),
+      });
+  
+      // Construct a new post object to be added to the local state
+      const newPost = {
+        id: docRef.id,
+        title: newPostTitle,
+        content: newPostContent,
+        userName: userName, // Include the username in the new post
+        comments: [],
+        createdAt: new Date(), // Fallback to the client's current date
+      };
+  
+      setPosts([newPost, ...posts]);
+      setNewPostTitle('');
+      setNewPostContent('');
+      setShowPostForm(false);
+    } catch (error) {
+      console.error("Error submitting post:", error);
+    }
   };
+  
 
   const handleCommentChange = (postId, text) => {
     setNewComments({ ...newComments, [postId]: text });
@@ -114,24 +132,6 @@ const Page = () => {
     setVisibleCommentFormPostId(postId);
   };
 
-  const formatDate = (firebaseTimestamp) => {
-    if (!firebaseTimestamp) return '';
-
-    let date;
-    if (firebaseTimestamp instanceof Timestamp) {
-      date = firebaseTimestamp.toDate();
-    } else if (firebaseTimestamp instanceof Date) {
-      date = firebaseTimestamp;
-    }
-
-    if (date instanceof Date) {
-      return date.toLocaleString();
-    } else {
-      return '';
-    }
-  };
-
-
   const handleSubmitComment = async (postId) => {
     if (!newComments[postId]) return;
     await addDoc(collection(firestore, 'comments'), {
@@ -139,7 +139,6 @@ const Page = () => {
       content: newComments[postId],
       createdAt: serverTimestamp(),
     });
-
 
     const updatedPosts = posts.map(post => {
       if (post.id === postId) {
@@ -156,19 +155,15 @@ const Page = () => {
     setNewComments({ ...newComments, [postId]: '' });
   };
 
-  const [showPostForm, setShowPostForm] = useState(false);
-
   const handleCancelComment = () => {
     setVisibleCommentFormPostId(null); // Hide the comment form
   };
 
   return (
     <>
-
       <Header />
       <div className="forum-container">
         <h1 className="forum-title">Forum Posts</h1>
-
         {isLoggedIn ? (
           !showPostForm && (
             <button className="toggle-post-form-btn" onClick={() => setShowPostForm(true)}>Post</button>
@@ -176,7 +171,6 @@ const Page = () => {
         ) : (
           <button className="ltoggle-post-form-btn" onClick={() => router.push('/signin')}>Login to Post</button>
         )}
-
         {showPostForm && (
           <form onSubmit={handleSubmitPost} className="post-form">
             <input
@@ -198,15 +192,13 @@ const Page = () => {
             <button type="button" className="cancel-post-btn" onClick={() => setShowPostForm(false)}>Cancel</button>
           </form>
         )}
-
         {posts.map((post) => (
-
           <div key={post.id} className="post-item">
             <div className="data__wrap">
               <div className="text__post">
                 <div className="post-header">
                   <h2 className="post-title">{post.title}</h2>
-                  <span>Posted by: {post.userName}</span> 
+                  <span>Posted by: {post.userName}</span>
                 </div>
                 <p className="post-content">{post.content}</p>
               </div>
@@ -214,7 +206,6 @@ const Page = () => {
                 <small>{formatDate(post.createdAt)}</small>
               </div>
             </div>
-
             <div className="comments-container">
               {post.comments.length > 0 ? (
                 post.comments.map((comment) => (
@@ -227,7 +218,6 @@ const Page = () => {
                 <p>No comments yet.</p>
               )}
             </div>
-
             {visibleCommentFormPostId === post.id ? (
               <div className="comment-form">
                 <textarea
@@ -245,16 +235,10 @@ const Page = () => {
               <button className="show-add-comment-btn" onClick={() => handleShowAddComment(post.id)}>Add Comment</button>
             )}
           </div>
-
-
-
         ))}
       </div>
     </>
   );
-
-
-
-
 };
+
 export default Page;
