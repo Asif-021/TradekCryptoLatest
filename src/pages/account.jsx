@@ -77,7 +77,7 @@ export default function Account() {
             case "transHistory":
                     return  <TransHistory data={data} setData={setData}/>;
             case "portfolio":
-                return return <Portfolio data={data} setData={setData}/>;;
+                return <Portfolio data={data} setData={setData}/>;;
             case "management":
                 return <Management data={data} setData={setData}/>;
             case "searchAccount":
