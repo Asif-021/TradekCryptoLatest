@@ -1,49 +1,88 @@
 body {
-    background-color: #1c1e22; /* Set the body background to the same color */
-    margin: 0; /* Remove default margin to prevent white spaces around the edges */
-    font-family: Arial, sans-serif; /* Optional: Set a default font for the page */
-  }
-  
-  .market-container {
-    color: white;
-    background-color: #1c1e22;
-    padding: 20px;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-  }
-  
-  .market-list-container {
-    width: 50%;
-  }
-  
-  .chart-container {
-    width: 50%;
-  }
-  
-  .crypto-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .cryptoItem {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background: #2a2d34;
-    border-radius: 5px;
-  }
-  
-  .cryptoName {
-    font-weight: bold;
-  }
-  
-  .cryptoPrice {
-    font-weight: lighter;
-  }
-  
-  /* Add any additional global styles you might need */
-  
+  background-color: #1c1e22; 
+  margin: 0;
+  font-family: Arial, sans-serif; 
+}
+.pop-container {
+  border: solid white;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  line-height: 1.5;
+  background: hsl(228, 25%, 22%);
+  padding: 3.5% 5%;
+  border-radius: 1.5rem;
+  max-width: 70%;
+  min-width: 70%;
+}
+
+
+
+.popup-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.popup-inner h3 {
+  margin-bottom: 2rem;
+}
+
+.popup-inner input, .popup-inner select {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.popup-inner button {
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+
+.market-container {
+  color: white;
+  background-color: #1c1e22;
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.market-list-container {
+  width: 100%;
+}
+
+.chart-container {
+  width: 100%;
+}
+
+.crypto-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cryptoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background: #2a2d34;
+  border-radius: 5px;
+}
+
+.cryptoName {
+  font-weight: bold;
+}
+
+.cryptoPrice {
+  font-weight: lighter;
+}
+
+/* Add any additional global styles you might need */
+

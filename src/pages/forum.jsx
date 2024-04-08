@@ -16,7 +16,7 @@ import {
 } from 'firebase/firestore';
 import { onAuthStateChanged } from 'firebase/auth'; // Corrected import for onAuthStateChanged
 import '../styles/ForumPage.css';
-import Header from '@/components/Header'; // Adjust the import path as necessary
+import Header from "../components/header.jsx";// Adjust the import path as necessary
 
 const formatDate = (firebaseTimestamp) => {
   if (!firebaseTimestamp) return '';
