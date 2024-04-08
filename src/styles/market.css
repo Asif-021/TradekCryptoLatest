@@ -1,7 +1,7 @@
 body {
-    background-color: #1c1e22; /* Set the body background to the same color */
-    margin: 0; /* Remove default margin to prevent white spaces around the edges */
-    font-family: Arial, sans-serif; /* Optional: Set a default font for the page */
+    background-color: #1c1e22; 
+    margin: 0; 
+    font-family: Arial, sans-serif; 
   }
   .pop-container {
     border: solid white;
@@ -57,8 +57,8 @@ body {
   display: flex;
   justify-content: space-between;
   gap: 20px;
-  position: relative; /* Change from fixed to relative */
-  min-height: 100vh; /* Set minimum height to fill the screen */
+  position: relative; 
+  min-height: 100vh; 
 }
 
   

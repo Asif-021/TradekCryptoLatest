@@ -4,6 +4,7 @@ import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '@/app/db.js';
 import { collection, addDoc } from 'firebase/firestore';
 import React from 'react';
+import styles from "../styles/signUp.css"; 
 
 async function addDataToFireStore(name, surname, username, email, password, phoneNumber, dob) {
   try {

@@ -1,0 +1,75 @@
+.min-h-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #161925;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.bg-gray-800 {
+    padding: 3em;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    width: 30%; 
+}
+
+.text-white {
+    color: #ffffff;
+}
+
+.text-2xl {
+    font-size: 2em; 
+    margin-bottom: 1em;
+}
+
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 1em;
+    margin-bottom: 0.5em;
+    border-radius: 5px;
+    border: 1px solid #23395B;
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    outline: none; 
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border: 1px solid #CBF7ED;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.bg-indigo-600,
+.bg-gray-600 {
+    padding: 1em;
+    margin-top: 1em;
+    border-radius: 5px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.bg-indigo-600:hover {
+    background-color: #CBF7ED; 
+}
+
+.bg-gray-600 {
+    background-color: #2D3748; 
+}
+
+.bg-gray-600:hover {
+    background-color: #4A5568; 
+}
+
+@media screen and (max-width: 768px) {
+    .bg-gray-800 {
+        width: 80%; 
+    }
+}

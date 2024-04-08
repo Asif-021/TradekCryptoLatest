@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { auth } from '@/app/db.js'; // Check the path
 import { useRouter } from 'next/navigation';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import styles from "../styles/signIn.css"; 
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
