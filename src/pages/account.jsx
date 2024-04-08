@@ -10,6 +10,8 @@ import TransHistory from "@/components/transactionHistory";
 import { useState, useEffect } from "react";
 import {firestore} from "../app/db.js";
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import { useRouter } from 'next/router';
+
 
 
 
@@ -22,33 +24,46 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 
 export default function Account() {
 
+    const router = useRouter();
     const [activeSetting, setActiveSetting] = useState("pinfo");
+    const [isLoggedIn, setIsLoggedIn] = useState(false); 
     const [data, setData] = useState("");
     
 
     useEffect(() => {
-        // Fetch data asynchronously
-        async function getData() {
-            try {
-                const email = localStorage.getItem("email");
-                if (email){
-                    const q = query(collection(firestore, "User Info"), where('email', '==', email));
-                    const result = await getDocs(q);
-                    if (result.empty) {
-                        console.log("No results");
-                        setData(null); // Update data state
-                    } else {
-                        const docID = result.docs[0].id;
-                        const userData = result.docs[0].data();
-                        const fullSet = {...userData, docID:docID };  
-                        setData(fullSet); // Update data state
+        // Check if user is logged in
+        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+        setIsLoggedIn(isLoggedIn);
+
+        // If user is not logged in, redirect to login page
+        if (!isLoggedIn) {
+            router.push("/signin")
+        } 
+        else{
+            // Fetch data asynchronously
+            async function getData() {
+                try {
+                    const email = localStorage.getItem("email");
+                    if (email){
+                        const q = query(collection(firestore, "User Info"), where('email', '==', email));
+                        const result = await getDocs(q);
+                        if (result.empty) {
+                            console.log("No results");
+                            setData(null); // Update data state
+                        } else {
+                            const docID = result.docs[0].id;
+                            const userData = result.docs[0].data();
+                            const fullSet = {...userData, docID:docID };  
+                            setData(fullSet); // Update data state
+                        }
                     }
+                } catch (error) {
+                        console.error("Error getting documents: ", error);
                 }
-            } catch (error) {
-                    console.error("Error getting documents: ", error);
             }
+            getData(); // Call getData when component mounts
         }
-        getData(); // Call fetchData when component mounts
+       
     }, []); // Empty dependency array ensures useEffect runs once on component mount
     
     const renderSetting = () => {

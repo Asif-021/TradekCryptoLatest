@@ -45,7 +45,7 @@ function searchAccount(){
             console.log(userRef);
 
             // Update the 'blocked' field in Firestore
-            await updateDoc(userDoc, {blocked: newBlockedStatus});
+            await updateDoc(userDoc, {blocked: newBlockedStatus, approved: false});
 
             // Update the user state to reflect the change
             setUser(prevUser => ({ ...prevUser, blocked: newBlockedStatus }));
