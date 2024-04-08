@@ -2,20 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { firestore } from "../app/db.js";
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
 import axios from 'axios';
 import styles from "../styles/portfolio.css";
 
-const Portfolio = ({ userID }) => { 
+const Portfolio = (props) => { 
   const [cryptoData, setCryptoData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchHoldings = async () => {
-        const docRef = doc(firestore, "cryptoHoldings", "t7XbVwLiLNDSmy9gYa9f");
-        const docSnap = await getDoc(docRef);
       
-        if (docSnap.exists()) {
+        const q = query(collection(firestore, "cryptoHoldings"), where("userID", "==", props.data.docID));
+        const docRef = await getDocs(q);
+        const docSnap = docRef.docs[0];
+        console.log(props.data.docID);
+      
+        if (!docSnap.empty) {
           return docSnap.data().holdings;
         } else {
           console.error("No such document!");
@@ -57,7 +60,7 @@ const Portfolio = ({ userID }) => {
     };
 
     calculatePortfolioValue();
-  }, [userID]);
+  }, [props.data.docID]);
 
   const generateRandomColor = () => {
     let maxVal = 0xFFFFFF;

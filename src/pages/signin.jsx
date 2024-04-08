@@ -17,7 +17,7 @@ const SignIn = () => {
       // If sign-in is successful, set localstorage variables and redirect to the homepageSI
       localStorage.setItem('isLoggedIn', true);
       localStorage.setItem('email', email);
-      router.push('/homePageSI');
+      router.push('/homePage');
     } catch (error) {
       // Display an error message if sign-in fails
       console.error('Sign-in error:', error.message);

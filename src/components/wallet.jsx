@@ -44,7 +44,7 @@ export default function Wallet(props) {
                         <ul>
                             {Object.keys(currentHoldings.holdings).map((key) => (
                                 <li key={key}>
-                                    <p>{key}: {currentHoldings.holdings[key]}</p>
+                                    <p>{key}: {currentHoldings.holdings[key].toFixed(10)}</p>
                                     
                                 </li>
                             ))}
