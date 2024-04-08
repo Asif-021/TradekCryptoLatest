@@ -2,9 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 import { firestore } from "../app/db.js";
-import { collection, doc, getDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import axios from 'axios';
 import styles from "../styles/portfolio.css";
+
+
+const cryptoColors = {
+  BITCOIN: "#ffa500",
+  ETHEREUM: "#CBC3E3",
+  DOGECOIN: "#ba9f33l",
+  LITECOIN: "#345d9d",
+  POLKADOT: "#e6007a",
+  RIPPLE: "#FF0000",
+  SOLANA: "#9945ff",
+};
 
 const Portfolio = (props) => { 
   const [cryptoData, setCryptoData] = useState([]);
@@ -12,20 +23,16 @@ const Portfolio = (props) => {
 
   useEffect(() => {
     const fetchHoldings = async () => {
+      const q = query(collection(firestore, "cryptoHoldings"), where("userID", "==", props.data.docID));
+      const docRef = await getDocs(q);
       
-        const q = query(collection(firestore, "cryptoHoldings"), where("userID", "==", props.data.docID));
-        const docRef = await getDocs(q);
-        const docSnap = docRef.docs[0];
-        console.log(props.data.docID);
-      
-        if (!docSnap.empty) {
-          return docSnap.data().holdings;
-        } else {
-          console.error("No such document!");
-          return null;
-        }
-      };
-      
+      if (!docRef.empty) {
+        return docRef.docs[0].data().holdings;
+      } else {
+        console.error("No such document!");
+        return null;
+      }
+    };
 
     const fetchCryptoPrices = async (holdings) => {
       const ids = Object.keys(holdings).join(',');
@@ -42,13 +49,13 @@ const Portfolio = (props) => {
       try {
         const holdings = await fetchHoldings();
         if (!holdings) throw new Error("No holdings found for this user.");
-        
+
         const prices = await fetchCryptoPrices(holdings);
-        
+
         const portfolioData = Object.entries(holdings).map(([key, value]) => {
           const cryptoPrice = prices[key.toLowerCase()]?.usd;
           const amount = value * cryptoPrice;
-          return { name: key.toUpperCase(), value: amount };
+          return { name: key.toUpperCase(), value: amount, color: cryptoColors[key.toUpperCase()] || "#999999" };
         });
 
         setCryptoData(portfolioData);
@@ -62,21 +69,12 @@ const Portfolio = (props) => {
     calculatePortfolioValue();
   }, [props.data.docID]);
 
-  const generateRandomColor = () => {
-    let maxVal = 0xFFFFFF;
-    let randomNumber = Math.random() * maxVal;
-    randomNumber = Math.floor(randomNumber);
-    randomNumber = randomNumber.toString(16);
-    let randColor = randomNumber.padStart(6, 0);   
-    return `#${randColor.toUpperCase()}`
-  }
-
   const pieChartData = {
     labels: cryptoData.map(crypto => crypto.name),
     datasets: [{
       label: 'Your Cryptocurrency Portfolio',
       data: cryptoData.map(crypto => crypto.value),
-      backgroundColor: cryptoData.map(() => generateRandomColor()),
+      backgroundColor: cryptoData.map(crypto => crypto.color),
       hoverOffset: 4,
     }]
   };
@@ -111,7 +109,7 @@ const Portfolio = (props) => {
   }
 
   return (
-    <div className="chart-container">
+    <div className={styles.chartContainer}>
       <Pie data={pieChartData} options={options} />
     </div>
   );
