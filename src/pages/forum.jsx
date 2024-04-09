@@ -96,9 +96,14 @@ const Page = () => {
       await user.reload();
   
       // Correctly reference the "User Info" collection and use the UID to fetch the user document
-      const userDataDoc = await getDoc(doc(firestore, 'user info', user.uid));
+      const q = query(collection(firestore, "User Info"), where("email", "==", user.email));
+      const qSnapshot = await getDocs(q);
+      const userDataDoc = qSnapshot.docs[0].data()
+      // const userDataDoc = await getDoc(doc(firestore, 'User info', user.uid));
       // Extract the username; use "Anonymous" as a fallback if the document or username doesn't exist
-      const userName = userDataDoc.exists() ? userDataDoc.data().username : "Anonymous";
+      // const userName = userDataDoc.exists() ? userDataDoc.data().username : "Anonymous";
+      const userName =  userDataDoc?.username || "Anonymous";
+      console.log(userName)
       
       // Proceed to create a new post with the fetched username
       const docRef = await addDoc(collection(firestore, 'posts'), {
