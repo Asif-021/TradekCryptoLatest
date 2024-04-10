@@ -8,74 +8,67 @@ import '../styles/pinfopopup.css';
 async function changeSubmit(option, dbData, input, setData, setInputValue, setErrors, togglePopup, errors){
         
     
-    try{
+    try {
         const dbDoc = doc(firestore, 'User Info', dbData.docID)
-        const dummy = {...dbData}
-        if  (input != ""){  
-            switch (option.toLowerCase()){
-                case "email":
-                    // Check if the new email already exists in the database
-                    const eQ = query(collection(firestore, 'User Info'), where('email', '==', input));
-                    const eResult = await getDocs(eQ);
-                    if (!eResult.empty) {
-                        setErrors(p => ({...p, emailDupe: true}))
-                        console.log(errors);
-                        return;
-                    }
+        const dummy = { ...dbData };
 
-                    await updateDoc(dbDoc, {"email": input}); 
-                    dummy.email = input;
-                    setData(dummy)
-                    console.log("Email changed to: ",input);
-                    togglePopup();
-                    break;
-                case "username":
-                    // Check if the new username already exists in the database
-                    const uQ = query(collection(firestore, 'User Info'), where('username', '==', input));
-                    const uResult = await getDocs(uQ);
-                    if (!uResult.empty) {
-                        setErrors(p => ({...p, usernameDupe: true}))
-                        return;
-                    }
-                    await updateDoc(dbDoc, {"username": input}); 
-                    dummy.username = input;
-                    console.log(dummy);
-                    setData(dummy);
-                    console.log("Username changed to: ",input);
-                    togglePopup();
-                    break;
-                case "password":
-                    // await updateDoc(dbDoc, {"password": input}); 
-                    // dummy.password = input;
-                    // setData(dummy);
-                    // console.log("Password changed to: ",input);
-                    // togglePopup();
-                    // break;
+        if (option.toLowerCase() !== "password" && input === "") {
+            setErrors(p => ({ ...p, emptyInput: true }));
+            return;
+        }
+        setErrors(p => ({ ...p, emptyInput: false }));
+        switch (option.toLowerCase()) {
+            case "email":
+                // Check if the new email already exists in the database
+                const eQ = query(collection(firestore, 'User Info'), where('email', '==', input));
+                const eResult = await getDocs(eQ);
+                if (!eResult.empty) {
+                    setErrors(p => ({ ...p, emailDupe: true }))
+                    console.log(errors);
+                    return;
+                }
 
-                    // Send password reset email using Firebase Auth
-                    sendPasswordResetEmail(auth, dbData.email)
+                await updateDoc(dbDoc, { "email": input });
+                dummy.email = input;
+                setData(dummy)
+                console.log("Email changed to: ", input);
+                togglePopup();
+                break;
+            case "username":
+                // Check if the new username already exists in the database
+                const uQ = query(collection(firestore, 'User Info'), where('username', '==', input));
+                const uResult = await getDocs(uQ);
+                if (!uResult.empty) {
+                    setErrors(p => ({ ...p, usernameDupe: true }))
+                    return;
+                }
+                await updateDoc(dbDoc, { "username": input });
+                dummy.username = input;
+                console.log(dummy);
+                setData(dummy);
+                console.log("Username changed to: ", input);
+                togglePopup();
+                break;
+            case "password":
+                // Send password reset email using Firebase Auth
+                sendPasswordResetEmail(auth, dbData.email)
                     .then(() => {
                         // Password reset email sent!
-                        alert("An email has been send, you can reset your password as requested")
-
+                        alert("An email has been sent. You can reset your password as requested.")
+                        auth.signOut();
                     })
                     .catch((error) => {
                         console.log(error)
-                        
                     });
-                    break;
-                default:
-                    return null;
-                }
-                setInputValue("");
+                break;
+            default:
+                return null;
+        }
 
-            } else {
-                alert('Please make sure all fields are filled out correctly!');
-                setErrors(p => ({...p, emptyInput: true}));
-                
-            }
-
-    } catch(e){console.error(e)}
+        setInputValue("");
+    } catch (e) {
+        console.error(e)
+    }
 }
 
 
@@ -145,7 +138,9 @@ export default function Popup(props){
                                     <p>Upon confirmation, you will receive an  email to reset your password.</p>
                                     </>)}
                                 </div>
-                                {(errors.emailDupe || errors.usernameDupe) && <div className='error'>This {option.toLowerCase()} is already in use</div>}
+                                    {(errors.emailDupe || errors.usernameDupe) && <div className='error'>This {option.toLowerCase()} is already in use</div>}
+                                    {(errors.emptyInput) && <div className='error'>Please enter a valid input</div>}
+
                                 <div className="submitbtn-container">
                                     <button id="submit" onClick={() => {changeSubmit(option, props.data, inputValue, props.setData, setInputValue, setErrors, togglePopup, errors)}}>Confirm</button>
                                 </div>
