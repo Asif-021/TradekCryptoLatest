@@ -188,3 +188,9 @@ body {
 .comment-form textarea {
     margin-bottom: 10px;
 }
+
+.delete-post-btn {
+    background-color: rgb(191, 86, 86);
+    margin-left: 70%;
+
+}
