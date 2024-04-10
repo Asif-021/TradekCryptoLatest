@@ -86,25 +86,26 @@ const Page = () => {
   const handleSubmitPost = async (e) => {
     e.preventDefault();
     const user = auth.currentUser;
-  
+
     if (!user) {
       console.error("User is not logged in.");
       return;
     }
-  
+
     try {
       await user.reload();
-  
+
       // Correctly reference the "User Info" collection and use the UID to fetch the user document
+
       const q = query(collection(firestore, "User Info"), where("email", "==", user.email));
       const qSnapshot = await getDocs(q);
       const userDataDoc = qSnapshot.docs[0].data()
       // const userDataDoc = await getDoc(doc(firestore, 'User info', user.uid));
       // Extract the username; use "Anonymous" as a fallback if the document or username doesn't exist
       // const userName = userDataDoc.exists() ? userDataDoc.data().username : "Anonymous";
-      const userName =  userDataDoc?.username || "Anonymous";
+      const userName = userDataDoc?.username || "Anonymous";
       console.log(userName)
-      
+
       // Proceed to create a new post with the fetched username
       const docRef = await addDoc(collection(firestore, 'posts'), {
         title: newPostTitle,
@@ -112,7 +113,7 @@ const Page = () => {
         userName: userName, // Use the fetched username
         createdAt: serverTimestamp(),
       });
-  
+
       // Construct a new post object to be added to the local state
       const newPost = {
         id: docRef.id,
@@ -122,7 +123,7 @@ const Page = () => {
         comments: [],
         createdAt: new Date(), // Fallback to the client's current date
       };
-  
+
       setPosts([newPost, ...posts]);
       setNewPostTitle('');
       setNewPostContent('');
@@ -131,7 +132,7 @@ const Page = () => {
       console.error("Error submitting post:", error);
     }
   };
-  
+
 
   const handleCommentChange = (postId, text) => {
     setNewComments({ ...newComments, [postId]: text });
@@ -220,29 +221,35 @@ const Page = () => {
                 post.comments.map((comment) => (
                   <div key={comment.id} className="comment-item">
                     <p className="comment-content">{comment.content}</p>
-                    <small>{formatDate(comment.createdAt)}</small>
+                    <small>Comment by: {comment.userName}</small>
                   </div>
                 ))
               ) : (
                 <p>No comments yet.</p>
               )}
+
             </div>
-            {visibleCommentFormPostId === post.id ? (
-              <div className="comment-form">
-                <textarea
-                  value={newComments[post.id] || ''}
-                  onChange={(e) => setNewComments({ ...newComments, [post.id]: e.target.value })}
-                  placeholder="Write a comment..."
-                  className="comment-input"
-                ></textarea>
-                <div>
-                  <button className="submit-comment-btn" onClick={() => handleSubmitComment(post.id)}>Post Comment</button>
-                  <button type="button" className="cancel-comment-btn" onClick={() => setVisibleCommentFormPostId(null)}>Cancel</button>
+            {isLoggedIn ? (
+              visibleCommentFormPostId === post.id ? (
+                <div className="comment-form">
+                  <textarea
+                    value={newComments[post.id] || ''}
+                    onChange={(e) => handleCommentChange(post.id, e.target.value)}
+                    placeholder="Write a comment..."
+                    className="comment-input"
+                  ></textarea>
+                  <div>
+                    <button className="submit-comment-btn" onClick={() => handleSubmitComment(post.id)}>Post Comment</button>
+                    <button type="button" className="cancel-comment-btn" onClick={() => handleCancelComment()}>Cancel</button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <button className="show-add-comment-btn" onClick={() => handleShowAddComment(post.id)}>Add Comment</button>
+              )
             ) : (
-              <button className="show-add-comment-btn" onClick={() => handleShowAddComment(post.id)}>Add Comment</button>
+              <button className="show-add-comment-btn" onClick={() => router.push('/signin')}>Sign in to Comment</button>
             )}
+
           </div>
         ))}
       </div>
