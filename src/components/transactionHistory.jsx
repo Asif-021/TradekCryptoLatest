@@ -85,12 +85,14 @@ function TransHistory(props){
             <div className="filter-form">
                 <div className="type -container">
                     <label htmlFor='type-dropdown'>Type:</label>
-                    <select id='type-dropdown'value={type} onChange={e=>setType(e.target.value)}>
+                    <select id='type-dropdown' value={type} onChange={e=>setType(e.target.value)}>
                         <option value='all'>All Types</option>
                         <option value='deposit'>Deposit</option>
                         <option value='withdrawal'>Withdrawal</option>
                         <option value='transfer'>Transfer</option>
-                        <option value='trade'>Trade</option>
+                        <option value='Buy'>Buy</option>
+                        <option value='Sell'>Sell</option>
+                        <option value='Convert'>Convert</option>
                     </select>
                 </div>
                 <div className="currency -container">

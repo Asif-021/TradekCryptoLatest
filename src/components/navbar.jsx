@@ -85,7 +85,7 @@ const Header = () => {
     return (
         <header>
             <div className="header-container">
-                <Link href="/homePage">
+                <Link href="/">
                     <p id="tradek">Tradek</p>
                 </Link>
                 {user ? (
@@ -96,9 +96,11 @@ const Header = () => {
                         </Link>
                     </div>
                 ) : (
-                    <Link href="/signin">
-                        <button id="sign-btn">Sign in</button>
-                    </Link>
+                    <div className="button-img">
+                        <Link href="/signin" id="sign-btn-link">
+                            <button id="sign-btn">Sign in</button>
+                        </Link>
+                    </div>
                 )}
             </div>
         </header>

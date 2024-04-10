@@ -14,6 +14,7 @@ header{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    height: 100%;
     /* margin: 1rem 1rem; */
 }
 
@@ -21,6 +22,7 @@ header{
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
 }
 
 .header-container p{
@@ -56,6 +58,11 @@ header{
     border-radius: 1rem;
     cursor: pointer;
     transition: all .25s ease;
+}
+
+#sign-btn-link{
+    display: flex;
+    height: 100%;
 }
 
 .button-img #logout-btn{
