@@ -6,6 +6,7 @@ import { auth, firestore } from '@/app/db.js';
 import Link from 'next/link';
 import React from 'react';
 import styles from "../styles/signIn.css"; 
+import Header from "../components/navbar.jsx";
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -35,6 +36,8 @@ const SignIn = () => {
   };
 
   return (
+    <>
+    <Header />
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="bg-gray-800 p-10 rounded-lg shadow-xl w-96">
         <h1 className="text-white text-2xl mb-5">Sign In</h1>
@@ -67,6 +70,7 @@ const SignIn = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

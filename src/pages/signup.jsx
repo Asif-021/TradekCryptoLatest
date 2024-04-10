@@ -3,6 +3,7 @@ import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { auth, firestore } from '@/app/db.js';
 import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import styles from "../styles/signUp.css"; 
+import Header from "../components/navbar.jsx";
 
 async function usernameExists(username) {
   const q = query(collection(firestore, 'User Info'), where('username', '==', username));
@@ -157,6 +158,8 @@ const SignUp = () => {
   };
 
   return (
+    <>
+    <Header />
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="bg-gray-800 p-10 rounded-lg shadow-xl w-96">
         <form onSubmit={handleSignUp}> {/* Add onSubmit handler */}
@@ -242,6 +245,7 @@ const SignUp = () => {
         </form>
       </div>
     </div>
+    </>
   );
 };
 
