@@ -144,17 +144,33 @@ const Page = () => {
 
   const handleSubmitComment = async (postId) => {
     if (!newComments[postId]) return;
+    const user = auth.currentUser;
+
+    if (!user) {
+      console.error("User is not logged in.");
+      return;
+    }
+
+    await user.reload();
+    const q = query(collection(firestore, "User Info"), where("email", "==", user.email));
+    const qSnapshot = await getDocs(q);
+    const userDataDoc = qSnapshot.docs[0].data();
+    const userName = userDataDoc?.username || "Anonymous";
+
     await addDoc(collection(firestore, 'comments'), {
       postId: postId,
       content: newComments[postId],
+      userName: userName, // Include the userName here
       createdAt: serverTimestamp(),
     });
 
+    // Fetch the updated comments for the postId
+    const updatedComments = await fetchCommentsForPost(postId);
     const updatedPosts = posts.map(post => {
       if (post.id === postId) {
         return {
           ...post,
-          comments: [...post.comments, { content: newComments[postId] }],
+          comments: updatedComments,
         };
       }
       return post;
@@ -163,6 +179,19 @@ const Page = () => {
     setPosts(updatedPosts);
     // Clear the input field
     setNewComments({ ...newComments, [postId]: '' });
+  };
+
+  const fetchCommentsForPost = async (postId) => {
+    const commentsQuery = query(
+      collection(firestore, 'comments'),
+      where('postId', '==', postId),
+      orderBy('createdAt', 'desc')
+    );
+    const snapshot = await getDocs(commentsQuery);
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
   };
 
   const handleCancelComment = () => {
@@ -221,7 +250,10 @@ const Page = () => {
                 post.comments.map((comment) => (
                   <div key={comment.id} className="comment-item">
                     <p className="comment-content">{comment.content}</p>
+                    {/* Display the comment's author name */}
                     <small>Comment by: {comment.userName}</small>
+                    {/* Include the formatted creation time of the comment, if desired */}
+                    <small>{formatDate(comment.createdAt)}</small>
                   </div>
                 ))
               ) : (
