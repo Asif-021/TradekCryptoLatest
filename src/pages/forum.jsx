@@ -1,13 +1,14 @@
 'use client'
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { firestore, auth } from '../app/db'; // Adjust the path as necessary
+import { firestore, auth } from '../app/db';
 import {
   collection,
   getDocs,
   getDoc,
   addDoc,
   doc,
+  deleteDoc,
   query,
   where,
   serverTimestamp,
@@ -58,6 +59,8 @@ const Page = () => {
         const post = {
           id: doc.id,
           ...doc.data(),
+          userId: auth.currentUser.uid,
+
           comments: [],
         };
 
@@ -106,13 +109,14 @@ const Page = () => {
       const userName = userDataDoc?.username || "Anonymous";
       console.log(userName)
 
-      // Proceed to create a new post with the fetched username
       const docRef = await addDoc(collection(firestore, 'posts'), {
         title: newPostTitle,
         content: newPostContent,
-        userName: userName, // Use the fetched username
+        userName: userName,
+        userId: auth.currentUser.uid, // Include the user ID
         createdAt: serverTimestamp(),
       });
+
 
       // Construct a new post object to be added to the local state
       const newPost = {
@@ -198,6 +202,34 @@ const Page = () => {
     setVisibleCommentFormPostId(null); // Hide the comment form
   };
 
+
+  const handleDeletePost = async (postId) => {
+    console.log(`Attempting to delete post with ID: ${postId}`);
+    const isUserConfirmed = window.confirm("Are you sure you want to delete this post?");
+    if (!isUserConfirmed) {
+      return;
+    }
+  
+    try {
+      await deleteDoc(doc(firestore, 'posts', postId));
+      console.log(`Post with ID: ${postId} has been successfully deleted.`);
+      const updatedPosts = posts.filter(post => post.id !== postId);
+      setPosts(updatedPosts);
+    } catch (error) {
+      console.error("Error deleting post:", error);
+    }
+  };
+  
+
+
+
+  console.log("Current user ID:", auth.currentUser?.uid);
+  posts.forEach(post => {
+    console.log(`Post ID: ${post.id}, Post User ID: ${post.userName}`);
+  });
+
+
+
   return (
     <>
       <NavBar />
@@ -233,6 +265,12 @@ const Page = () => {
         )}
         {posts.map((post) => (
           <div key={post.id} className="post-item">
+            {auth.currentUser?.uid === post.userId && (
+              <button onClick={() => handleDeletePost(post.id)} className="delete-post-btn">
+                Delete Post
+              </button>
+            )}
+
             <div className="data__wrap">
               <div className="text__post">
                 <div className="post-header">
