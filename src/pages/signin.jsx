@@ -1,38 +1,44 @@
-'use client';
+// SignIn.jsx
 import { useState } from 'react';
-import { auth } from '@/app/db.js'; // Check the path
-import { useRouter } from 'next/navigation';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { useRouter } from 'next/router';
+import { auth, firestore } from '@/app/db.js';
+import Link from 'next/link';
+import React from 'react';
 import styles from "../styles/signIn.css"; 
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(''); // State to hold error message
   const router = useRouter();
 
   const handleSignIn = async () => {
     try {
-      // Sign in with email and password
-      await signInWithEmailAndPassword(auth, email, password); // Pass `auth` as first parameter
-      
+      await signInWithEmailAndPassword(auth, email, password);
       router.push('/homePage');
     } catch (error) {
-      // Display an error message if sign-in fails
       console.error('Sign-in error:', error.message);
-      // You can set a state variable here to display the error message to the user
+      setErrorMessage('Invalid email or password. Please try again.'); // Set error message
     }
   };
 
+
+
   const handleSignUp = () => {
-    // Redirect to sign-in page using Next.js router
-    window.location.href = '/signup';
+    router.push('/signup');
   };
 
+  const toggleResetPasswordModal = () => {
+    setIsResetPasswordModalOpen(!isResetPasswordModalOpen);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="bg-gray-800 p-10 rounded-lg shadow-xl w-96">
         <h1 className="text-white text-2xl mb-5">Sign In</h1>
+        {errorMessage && <div className="text-red-500 mb-4">{errorMessage}</div>} {/* Display error message */}
         <input 
           type="email" 
           placeholder="Email" 
@@ -56,9 +62,13 @@ const SignIn = () => {
         <button onClick={handleSignUp} className="w-full p-3 mt-2 bg-gray-600 rounded text-white hover:bg-gray-700">
           Sign Up
         </button>
+        <div>
+          <a href="/ResetPassword">Forgot Password?</a>
+        </div>
       </div>
     </div>
   );
 };
 
 export default SignIn;
+
