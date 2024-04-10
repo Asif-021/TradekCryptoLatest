@@ -266,7 +266,7 @@ const Page = () => {
         {posts.map((post) => (
           <div key={post.id} className="post-item">
             {auth.currentUser?.uid === post.userId && (
-              <button onClick={() => handleDeletePost(post.id)} className="delete-post-btn">
+              <button onClick={() => handleDeletePost(post.id)} className="delete-post-btn cancel-post-btn">
                 Delete Post
               </button>
             )}
