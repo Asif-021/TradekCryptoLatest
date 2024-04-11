@@ -59,8 +59,7 @@ const Page = () => {
         const post = {
           id: doc.id,
           ...doc.data(),
-          userId: auth.currentUser.uid,
-
+          userId: auth.currentUser?.uid,
           comments: [],
         };
 
