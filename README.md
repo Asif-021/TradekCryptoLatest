@@ -22,6 +22,9 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
+## A small Bug
+Due to the last-minute changes, accessing forum or profile page before the market page after logging in  is causing a small bug with the market page getting the userId probably because of the asynch nature of the functions, though, that should be easily fixable by modifying some lines of code , we are well aware of the bug and we will fix it as soon as possible . For now, For the app to be tested without bugs, we're assuming you access the market page first after logging in, then any other page.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
